@@ -313,10 +313,10 @@ const BODY_REST_Y = BONES.body.pivot[1] - BONES.waist.pivot[1];
 
 function faceRect(x1, y1, x2, y2) {
     return [
+        [x1 / TW, 1 - y1 / TH],
+        [x2 / TW, 1 - y1 / TH],
         [x1 / TW, 1 - y2 / TH],
         [x2 / TW, 1 - y2 / TH],
-        [x2 / TW, 1 - y1 / TH],
-        [x1 / TW, 1 - y1 / TH],
     ];
 }
 
