@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nako Hikari</title>
+<link rel="stylesheet" href="/css/nako.css">
+<style>
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-lg);
+    padding: var(--space-3xl) 0 var(--space-2xl);
+}
+
+.hero-kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--text-clickable-link);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin: 0;
+}
+
+.hero p {
+    max-width: 520px;
+    color: var(--text-muted);
+    line-height: var(--lh-relaxed);
+}
+
+.hero-media {
+    width: 100%;
+    max-width: 640px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-deep);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: rise 0.7s ease forwards 0.15s;
+}
+
+.hero-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.cta-row {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.cta-row a {
+    text-decoration: none;
+}
+
+.cta-row button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-width: 200px;
+    justify-content: center;
+}
+
+@keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.char-section {
+    padding: var(--space-2xl) 0 var(--space-3xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.char-section h2 { margin-bottom: 0; }
+
+.char-hint {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    margin: 0 0 var(--space-md);
+}
+
+.char-viewport {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    height: 460px;
+    border-radius: var(--radius-lg);
+    border: var(--border-width) solid var(--border-color);
+    background:
+        radial-gradient(ellipse at 50% 30%, var(--accent-dark-300) 0%, transparent 60%),
+        linear-gradient(180deg, var(--container-bg) 0%, var(--box-bg) 100%);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    cursor: grab;
+}
+
+.char-viewport:active { cursor: grabbing; }
+
+.char-viewport canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.char-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    letter-spacing: var(--ls-wide);
+    transition: opacity var(--transition-slow);
+    pointer-events: none;
+}
+
+.char-loading.hidden { opacity: 0; }
+
+.char-bubble {
+    position: absolute;
+    top: var(--space-lg);
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: var(--container-bg);
+    border: var(--border-width) solid var(--border-color);
+    color: var(--text-bright);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-full);
+    font-size: var(--fs-sm);
+    box-shadow: var(--shadow-soft);
+    opacity: 0;
+    pointer-events: none;
+    z-index: var(--z-tooltip);
+}
+
+.char-bubble.show {
+    animation: bubble-pop 1.6s ease forwards;
+}
+
+@keyframes bubble-pop {
+    0% { opacity: 0; transform: translate(-50%, 6px); }
+    15% { opacity: 1; transform: translate(-50%, 0); }
+    80% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -6px); }
+}
+</style>
+</head>
+<body>
+
+<div class="theme-toggle-row">
+    <button class="theme-toggle interactive" onclick="toggleTheme()" aria-label="Toggle theme">
+        <img id="theme-icon" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/moon.png" alt="">
+    </button>
+</div>
+
+<div class="wrapper">
+
+    <section class="hero">
+        <span class="hero-kicker">Nako Hikari</span>
+        <h1>Nako Hikari</h1>
+        <p>Bedrock command references and creator tools, built for the way you actually play and build.</p>
+
+        <div class="hero-media">
+            <img src="https://raw.githubusercontent.com/nako-hikari/assets/main/images/nako-main-page.gif" alt="Nako Hikari">
+        </div>
+
+        <div class="cta-row">
+            <a href="https://bedrock-commands.vercel.app" target="_blank" rel="noopener">
+                <button class="primary interactive">Bedrock Commands</button>
+            </a>
+            <a href="https://nako-tools.vercel.app" target="_blank" rel="noopener">
+                <button class="secondary interactive">Nako Tools</button>
+            </a>
+        </div>
+    </section>
+
+    <section class="char-section">
+        <h2>Say Hi</h2>
+        <p class="char-hint">Drag to look around, scroll to zoom, click her to say hi.</p>
+        <div class="char-viewport" id="charViewport">
+            <div class="char-loading" id="charLoading">loading nako…</div>
+            <div class="char-bubble" id="charBubble">Hii~ ✨</div>
+        </div>
+    </section>
+
+    <div class="footer">
+        <div class="footer-title">Nako Hikari</div>
+        <div class="footer-links">
+            <a href="https://github.com/nako-hikari/" target="_blank" class="social">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub">
+                GitHub
+            </a>
+            <a href="https://m.youtube.com/@NaCryst" target="_blank" class="social">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+                YouTube
+            </a>
+            <a href="https://www.tiktok.com/@nako_hikari_mc" target="_blank" class="social">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+                TikTok
+            </a>
+            <a href="https://ko-fi.com/arialicee" target="_blank" class="social kofi">
+                <img src="https://raw.githubusercontent.com/nako-hikari/support-files/main/assets/kofi-icon.png" alt="Ko-fi">
+                Support me on Ko-fi
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-overlay" id="nakoModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 class="modal-title" id="nakoModalTitle"></h2>
+            <button class="modal-close interactive" onclick="closeNakoModal()" aria-label="Close">
+                <img class="icon" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/close.png" alt="">
+            </button>
+        </div>
+        <div class="modal-body" id="nakoModalBody"></div>
+        <div class="modal-footer" id="nakoModalFooter"></div>
+    </div>
+</div>
+
+<script>
+function toggleTheme() {
+    const root = document.documentElement;
+    const btn = document.querySelector('.theme-toggle');
+    const icon = document.getElementById('theme-icon');
+    const goingLight = root.getAttribute('data-theme') !== 'light';
+
+    btn.classList.add('spinning');
+    setTimeout(() => btn.classList.remove('spinning'), 400);
+
+    if (goingLight) {
+        root.setAttribute('data-theme', 'light');
+        icon.src = 'https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sun.png';
+        localStorage.setItem('nako-theme', 'light');
+    } else {
+        root.removeAttribute('data-theme');
+        icon.src = 'https://raw.githubusercontent.com/nako-hikari/assets/main/ui/moon.png';
+        localStorage.setItem('nako-theme', 'dark');
+    }
+}
+
+(function() {
+    if (localStorage.getItem('nako-theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('theme-icon').src = 'https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sun.png';
+    }
+})();
+
+function showModal(title, message, options) {
+    options = options || {};
+    document.getElementById('nakoModalTitle').textContent = title;
+    document.getElementById('nakoModalBody').textContent = message;
+
+    const footer = document.getElementById('nakoModalFooter');
+    footer.innerHTML = '';
+
+    if (options.onConfirm) {
+        const cancel = document.createElement('button');
+        cancel.className = 'secondary interactive';
+        cancel.textContent = options.cancelText || 'Cancel';
+        cancel.onclick = closeNakoModal;
+        footer.appendChild(cancel);
+
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = options.danger ? 'danger interactive' : 'primary interactive';
+        confirmBtn.textContent = options.confirmText || (options.danger ? 'Delete' : 'Confirm');
+        confirmBtn.onclick = () => { closeNakoModal(); options.onConfirm(); };
+        footer.appendChild(confirmBtn);
+    } else {
+        const ok = document.createElement('button');
+        ok.className = 'secondary interactive';
+        ok.textContent = 'OK';
+        ok.onclick = closeNakoModal;
+        footer.appendChild(ok);
+    }
+
+    document.getElementById('nakoModal').classList.add('open');
+}
+
+function closeNakoModal() {
+    document.getElementById('nakoModal').classList.remove('open');
+}
+
+document.getElementById('nakoModal').addEventListener('click', e => {
+    if (e.target.id === 'nakoModal') closeNakoModal();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeNakoModal();
+});
+</script>
+
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+
+const SKIN_URL = 'https://raw.githubusercontent.com/nako-hikari/assets/main/skin/nako_maid.png';
+const TW = 64, TH = 64;
+
+const BONES = {
+    root:  { parent: null,   pivot: [0, 0, 0] },
+    waist: { parent: 'root', pivot: [0, 12, 0] },
+    body:  { parent: 'waist', pivot: [0, 24, 0], cubes: [{ origin: [-4, 12, -2], size: [8, 12, 4], uv: [16, 16] }] },
+    head:  { parent: 'body', pivot: [0, 24, 0], cubes: [{ origin: [-4, 24, -4], size: [8, 8, 8], uv: [0, 0] }] },
+    hat:   { parent: 'head', pivot: [0, 24, 0], cubes: [{ origin: [-4, 24, -4], size: [8, 8, 8], uv: [32, 0], inflate: 0.5 }] },
+    cape:  { parent: 'body', pivot: [0, 24, 3] },
+    leftArm:    { parent: 'body', pivot: [5, 22, 0], cubes: [{ origin: [4, 12, -2], size: [3, 12, 4], uv: [32, 48] }] },
+    leftSleeve: { parent: 'leftArm', pivot: [5, 22, 0], cubes: [{ origin: [4, 12, -2], size: [3, 12, 4], uv: [48, 48], inflate: 0.25 }] },
+    leftItem:   { parent: 'leftArm', pivot: [6, 15, 1] },
+    rightArm:    { parent: 'body', pivot: [-5, 22, 0], cubes: [{ origin: [-7, 12, -2], size: [3, 12, 4], uv: [40, 16] }] },
+    rightSleeve: { parent: 'rightArm', pivot: [-5, 22, 0], cubes: [{ origin: [-7, 12, -2], size: [3, 12, 4], uv: [40, 32], inflate: 0.25 }] },
+    rightItem:   { parent: 'rightArm', pivot: [-6, 15, 1] },
+    leftLeg:    { parent: 'root', pivot: [1.9, 12, 0], cubes: [{ origin: [-0.1, 0, -2], size: [4, 12, 4], uv: [16, 48] }] },
+    leftPants:  { parent: 'leftLeg', pivot: [1.9, 12, 0], cubes: [{ origin: [-0.1, 0, -2], size: [4, 12, 4], uv: [0, 48], inflate: 0.25 }] },
+    rightLeg:   { parent: 'root', pivot: [-1.9, 12, 0], cubes: [{ origin: [-3.9, 0, -2], size: [4, 12, 4], uv: [0, 16] }] },
+    rightPants: { parent: 'rightLeg', pivot: [-1.9, 12, 0], cubes: [{ origin: [-3.9, 0, -2], size: [4, 12, 4], uv: [0, 32], inflate: 0.25 }] },
+    jacket: { parent: 'body', pivot: [0, 24, 0], cubes: [{ origin: [-4, 12, -2], size: [8, 12, 4], uv: [16, 32], inflate: 0.25 }] },
+};
+
+const OVERLAY_BONES = new Set(['hat', 'jacket', 'leftSleeve', 'rightSleeve', 'leftPants', 'rightPants']);
+
+function faceRect(x1, y1, x2, y2) {
+    return [
+        [x1 / TW, 1 - y2 / TH],
+        [x2 / TW, 1 - y2 / TH],
+        [x2 / TW, 1 - y1 / TH],
+        [x1 / TW, 1 - y1 / TH],
+    ];
+}
+
+function applyBoxUV(geo, u, v, w, h, d) {
+    const top    = faceRect(u + d, v, u + d + w, v + d);
+    const bottom = faceRect(u + d + w, v, u + d + w * 2, v + d);
+    const left   = faceRect(u, v + d, u + d, v + d + h);
+    const front  = faceRect(u + d, v + d, u + d + w, v + d + h);
+    const right  = faceRect(u + d + w, v + d, u + d + w + d, v + d + h);
+    const back   = faceRect(u + d + w + d, v + d, u + d + w + d + w, v + d + h);
+
+    const order = [right, left, top, bottom, front, back];
+    const uvAttr = geo.attributes.uv;
+    order.forEach((verts, f) => {
+        verts.forEach((vert, i) => uvAttr.setXY(f * 4 + i, vert[0], vert[1]));
+    });
+    uvAttr.needsUpdate = true;
+}
+
+function makeCube(origin, size, uv, inflate, material) {
+    const [ox, oy, oz] = origin;
+    const [w, h, d] = size;
+    const geo = new THREE.BoxGeometry(w + inflate * 2, h + inflate * 2, d + inflate * 2);
+    applyBoxUV(geo, uv[0], uv[1], w, h, d);
+    const mesh = new THREE.Mesh(geo, material);
+    mesh.position.set(ox + w / 2, oy + h / 2, oz + d / 2);
+    mesh.castShadow = true;
+    return mesh;
+}
+
+function buildCharacter(texture) {
+    const baseMat = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.85, metalness: 0 });
+    const overlayMat = new THREE.MeshStandardMaterial({
+        map: texture, roughness: 0.85, metalness: 0,
+        transparent: true, alphaTest: 0.5, side: THREE.DoubleSide,
+    });
+
+    const groups = {};
+    Object.keys(BONES).forEach(name => {
+        const data = BONES[name];
+        const group = new THREE.Group();
+        group.name = name;
+        if (data.cubes) {
+            const mat = OVERLAY_BONES.has(name) ? overlayMat : baseMat;
+            data.cubes.forEach(c => {
+                const cube = makeCube(c.origin, c.size, c.uv, c.inflate || 0, mat);
+                cube.position.x -= data.pivot[0];
+                cube.position.y -= data.pivot[1];
+                cube.position.z -= data.pivot[2];
+                group.add(cube);
+            });
+        }
+        groups[name] = group;
+    });
+
+    Object.keys(BONES).forEach(name => {
+        const data = BONES[name];
+        if (!data.parent) return;
+        const parentData = BONES[data.parent];
+        groups[name].position.set(
+            data.pivot[0] - parentData.pivot[0],
+            data.pivot[1] - parentData.pivot[1],
+            data.pivot[2] - parentData.pivot[2]
+        );
+        groups[data.parent].add(groups[name]);
+    });
+
+    const scale = 1 / 16;
+    groups.root.scale.setScalar(scale);
+    return groups;
+}
+
+const viewport = document.getElementById('charViewport');
+const loadingEl = document.getElementById('charLoading');
+const bubbleEl = document.getElementById('charBubble');
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x1a1220, 6, 16);
+
+const camera = new THREE.PerspectiveCamera(35, viewport.clientWidth / viewport.clientHeight, 0.1, 100);
+camera.position.set(0, 1.6, 4.2);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+viewport.appendChild(renderer.domElement);
+
+const hemi = new THREE.HemisphereLight(0xcbb6e0, 0x1a1220, 0.9);
+scene.add(hemi);
+
+const key = new THREE.DirectionalLight(0xffffff, 1.4);
+key.position.set(2.5, 4, 3);
+key.castShadow = true;
+key.shadow.mapSize.set(1024, 1024);
+key.shadow.camera.near = 1;
+key.shadow.camera.far = 12;
+key.shadow.camera.left = -3;
+key.shadow.camera.right = 3;
+key.shadow.camera.top = 3;
+key.shadow.camera.bottom = -3;
+scene.add(key);
+
+const rim = new THREE.DirectionalLight(0x9d6bc9, 0.6);
+rim.position.set(-3, 2, -3);
+scene.add(rim);
+
+const groundGeo = new THREE.CircleGeometry(6, 48);
+const groundMat = new THREE.ShadowMaterial({ opacity: 0.35 });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.target.set(0, 1.0, 0);
+controls.minDistance = 2.2;
+controls.maxDistance = 7;
+controls.maxPolarAngle = Math.PI * 0.53;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.6;
+controls.update();
+
+let character = null;
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+const loader = new THREE.TextureLoader();
+loader.setCrossOrigin('anonymous');
+loader.load(SKIN_URL, texture => {
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+    texture.generateMipmaps = false;
+    texture.colorSpace = THREE.SRGBColorSpace;
+
+    character = buildCharacter(texture);
+    scene.add(character.root);
+    loadingEl.classList.add('hidden');
+}, undefined, () => {
+    loadingEl.textContent = 'could not load nako';
+});
+
+const BOUND = 1.1;
+let dir = 1;
+let posX = 0;
+let state = 'run';
+let stateTimer = 2 + Math.random() * 1.5;
+let lookTarget = 0;
+let greetT = 0;
+
+const clock = new THREE.Clock();
+
+function pickNextLook() {
+    lookTarget = (Math.random() - 0.5) * 1.4;
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    const dt = Math.min(clock.getDelta(), 0.05);
+    const t = clock.elapsedTime;
+
+    if (character) {
+        const g = character;
+        stateTimer -= dt;
+
+        if (state === 'run') {
+            const speed = 0.55;
+            posX += dir * speed * dt;
+            if (posX > BOUND) { posX = BOUND; dir = -1; }
+            if (posX < -BOUND) { posX = -BOUND; dir = 1; }
+
+            g.root.position.x = posX;
+            g.root.rotation.y = dir > 0 ? Math.PI / 2 : -Math.PI / 2;
+
+            const cycle = t * 9;
+            const swing = Math.sin(cycle);
+            g.rightArm.rotation.x = swing * 0.9;
+            g.leftArm.rotation.x = -swing * 0.9;
+            g.rightLeg.rotation.x = -swing * 1.0;
+            g.leftLeg.rotation.x = swing * 1.0;
+            g.body.position.y = Math.abs(Math.sin(cycle)) * 0.04;
+            g.head.rotation.y = Math.sin(cycle * 0.5) * 0.08;
+            g.head.rotation.z = Math.sin(cycle) * 0.03;
+
+            if (stateTimer <= 0) {
+                state = 'idle';
+                stateTimer = 1.6 + Math.random() * 2.2;
+                pickNextLook();
+            }
+        } else if (state === 'idle') {
+            g.rightArm.rotation.x = THREE.MathUtils.lerp(g.rightArm.rotation.x, 0, 0.08);
+            g.leftArm.rotation.x = THREE.MathUtils.lerp(g.leftArm.rotation.x, 0, 0.08);
+            g.rightLeg.rotation.x = THREE.MathUtils.lerp(g.rightLeg.rotation.x, 0, 0.08);
+            g.leftLeg.rotation.x = THREE.MathUtils.lerp(g.leftLeg.rotation.x, 0, 0.08);
+            g.body.position.y = THREE.MathUtils.lerp(g.body.position.y, Math.sin(t * 1.6) * 0.015, 0.1);
+
+            if (stateTimer < 1.2 && Math.random() < 0.02) pickNextLook();
+            g.head.rotation.y = THREE.MathUtils.lerp(g.head.rotation.y, lookTarget, 0.04);
+            g.head.rotation.z = THREE.MathUtils.lerp(g.head.rotation.z, 0, 0.06);
+
+            if (stateTimer <= 0) {
+                state = 'run';
+                stateTimer = 2.5 + Math.random() * 2.5;
+                g.head.rotation.y = 0;
+            }
+        } else if (state === 'greet') {
+            greetT += dt;
+            g.rightArm.rotation.x = -1.9;
+            g.rightArm.rotation.z = Math.sin(greetT * 14) * 0.5;
+            g.head.rotation.y = THREE.MathUtils.lerp(g.head.rotation.y, 0, 0.1);
+            g.body.position.y = Math.abs(Math.sin(greetT * 10)) * 0.03;
+
+            if (greetT > 1.3) {
+                state = 'idle';
+                stateTimer = 1 + Math.random();
+                greetT = 0;
+                g.rightArm.rotation.z = 0;
+            }
+        }
+    }
+
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
+
+renderer.domElement.addEventListener('click', e => {
+    if (!character) return;
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObject(character.root, true);
+    if (hits.length > 0) {
+        state = 'greet';
+        greetT = 0;
+        bubbleEl.classList.remove('show');
+        void bubbleEl.offsetWidth;
+        bubbleEl.classList.add('show');
+    }
+});
+
+function handleResize() {
+    const w = viewport.clientWidth, h = viewport.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+}
+window.addEventListener('resize', handleResize);
+</script>
+
+</body>
+</html>
