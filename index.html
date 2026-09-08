@@ -6,6 +6,11 @@
 <title>Nako Hikari</title>
 <link rel="stylesheet" href="/css/nako.css">
 <style>
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 #charStage {
     position: fixed;
     inset: 0;
@@ -59,6 +64,10 @@
 .wrapper {
     position: relative;
     z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .hero {
@@ -66,18 +75,19 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: var(--space-lg);
-    padding: var(--space-3xl) 0 var(--space-2xl);
+    gap: var(--space-md);
+    padding: var(--space-xl) 0 0;
 }
 
 .hero h1 {
-    font-size: 3rem;
+    font-size: 2.6rem;
     margin: 0;
 }
 
 .hero-media {
-    width: 100%;
+    width: 50%;
     max-width: 640px;
+    min-width: 180px;
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: var(--border-width) solid var(--border-color);
@@ -91,6 +101,7 @@
     display: block;
     width: 100%;
     height: auto;
+    filter: none;
 }
 
 .cta-row {
@@ -274,7 +285,7 @@ try {
     throw err;
 }
 
-const SKIN_URL = 'https://raw.githubusercontent.com/nako-hikari/assets/refs/heads/main/skin/nako-maid.png';
+const SKIN_URL = 'https://raw.githubusercontent.com/nako-hikari/assets/main/skin/nako_maid.png';
 const TW = 64, TH = 64;
 
 const BONES = {
@@ -334,7 +345,42 @@ function makeCube(origin, size, uv, inflate, material) {
     return mesh;
 }
 
-function buildCharacter(texture) {
+function detectFlatOverlays(image) {
+    const flat = new Set();
+    let ctx;
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.naturalWidth || image.width;
+        canvas.height = image.naturalHeight || image.height;
+        ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(image, 0, 0);
+    } catch (err) {
+        return flat;
+    }
+    const scale = (image.naturalWidth || image.width) / TW;
+    OVERLAY_BONES.forEach(name => {
+        const cube = BONES[name].cubes[0];
+        const [u, v] = cube.uv;
+        const [w, h, d] = cube.size;
+        const rx = Math.max(0, Math.round(u * scale));
+        const ry = Math.max(0, Math.round(v * scale));
+        const rw = Math.max(1, Math.round((w * 2 + d * 2) * scale));
+        const rh = Math.max(1, Math.round((d + h) * scale));
+        try {
+            const data = ctx.getImageData(rx, ry, rw, rh).data;
+            let hasTransparency = false;
+            for (let i = 3; i < data.length; i += 4) {
+                if (data[i] < 250) { hasTransparency = true; break; }
+            }
+            if (!hasTransparency) flat.add(name);
+        } catch (err) {
+            /* leave as visible if sampling fails */
+        }
+    });
+    return flat;
+}
+
+function buildCharacter(texture, skipBones) {
     const baseMat = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.85, metalness: 0 });
     const overlayMat = new THREE.MeshStandardMaterial({
         map: texture, roughness: 0.85, metalness: 0,
@@ -346,7 +392,7 @@ function buildCharacter(texture) {
         const data = BONES[name];
         const group = new THREE.Group();
         group.name = name;
-        if (data.cubes) {
+        if (data.cubes && !skipBones.has(name)) {
             const mat = OVERLAY_BONES.has(name) ? overlayMat : baseMat;
             data.cubes.forEach(c => {
                 const cube = makeCube(c.origin, c.size, c.uv, c.inflate || 0, mat);
@@ -371,7 +417,7 @@ function buildCharacter(texture) {
         groups[data.parent].add(groups[name]);
     });
 
-    groups.root.scale.setScalar(1 / 16);
+    groups.root.scale.setScalar(1 / 18);
     return groups;
 }
 
@@ -382,8 +428,8 @@ const scene = new THREE.Scene();
 
 const CAM_DIST = 6.5;
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 1.6, CAM_DIST);
-camera.lookAt(0, 1.0, 0);
+camera.position.set(0, 1.5, CAM_DIST);
+camera.lookAt(0, 0.9, 0);
 
 let renderer;
 try {
@@ -407,21 +453,29 @@ rim.position.set(-3, 2, -3);
 scene.add(rim);
 
 const shadowBlob = new THREE.Mesh(
-    new THREE.CircleGeometry(0.42, 32),
+    new THREE.CircleGeometry(0.38, 32),
     new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.28 })
 );
 shadowBlob.rotation.x = -Math.PI / 2;
 shadowBlob.position.y = 0.01;
 scene.add(shadowBlob);
 
-let BOUND = 3;
+let BOUND_X = 3;
+let BOUND_Z = 1.2;
 function updateBounds() {
     const vFov = (camera.fov * Math.PI) / 180;
     const visibleHeight = 2 * Math.tan(vFov / 2) * CAM_DIST;
     const visibleWidth = visibleHeight * camera.aspect;
-    BOUND = (visibleWidth / 2) * 0.82;
+    BOUND_X = (visibleWidth / 2) * 0.8;
+    BOUND_Z = Math.min(1.4, BOUND_X * 0.4);
 }
 updateBounds();
+
+function dampAngle(current, target, rate, dt) {
+    let diff = target - current;
+    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+    return current + diff * (1 - Math.exp(-rate * dt));
+}
 
 let character = null;
 const raycaster = new THREE.Raycaster();
@@ -437,7 +491,8 @@ loader.load(
             texture.generateMipmaps = false;
             texture.colorSpace = THREE.SRGBColorSpace;
 
-            character = buildCharacter(texture);
+            const skipBones = detectFlatOverlays(texture.image);
+            character = buildCharacter(texture, skipBones);
             scene.add(character.root);
             loadingEl.classList.add('hidden');
         } catch (err) {
@@ -448,11 +503,12 @@ loader.load(
     err => fail('the skin texture could not be fetched (CORS or 404)', err)
 );
 
-const BOUND_MARGIN = 0;
-let dir = 1;
-let posX = 0;
+let posX = 0, posZ = 0;
+let targetX = 0, targetZ = 0;
+let facingY = 0;
 let state = 'run';
-let stateTimer = 2 + Math.random() * 1.5;
+let stateTimer = 1.5 + Math.random();
+let runBlend = 0;
 let lookTarget = 0;
 let greetT = 0;
 let bubbleUntil = 0;
@@ -460,8 +516,24 @@ let bubbleUntil = 0;
 const clock = new THREE.Clock();
 const headWorldPos = new THREE.Vector3();
 
-function pickNextLook() {
-    lookTarget = (Math.random() - 0.5) * 1.4;
+function pickDestination() {
+    targetX = (Math.random() * 2 - 1) * BOUND_X;
+    targetZ = (Math.random() * 2 - 1) * BOUND_Z;
+}
+pickDestination();
+
+function computeCameraLookYaw(g) {
+    g.head.getWorldPosition(headWorldPos);
+    const toCam = new THREE.Vector3().subVectors(camera.position, headWorldPos);
+    const worldAngle = Math.atan2(toCam.x, toCam.z);
+    let rel = worldAngle - g.root.rotation.y;
+    rel = Math.atan2(Math.sin(rel), Math.cos(rel));
+    if (Math.abs(rel) > Math.PI * 0.62) return 0;
+    return THREE.MathUtils.clamp(rel, -0.85, 0.85);
+}
+
+function pickIdleGlance() {
+    lookTarget = (Math.random() - 0.5) * 1.6;
 }
 
 function animate() {
@@ -470,58 +542,70 @@ function animate() {
     const t = clock.elapsedTime;
 
     camera.position.x = Math.sin(t * 0.05) * 0.5;
-    camera.lookAt(0, 1.0, 0);
+    camera.lookAt(0, 0.9, 0);
 
     if (character) {
         const g = character;
+        stateTimer -= dt;
 
         if (state === 'run') {
-            stateTimer -= dt;
-            const speed = 0.6;
-            posX += dir * speed * dt;
-            if (posX > BOUND - BOUND_MARGIN) { posX = BOUND - BOUND_MARGIN; dir = -1; }
-            if (posX < -BOUND + BOUND_MARGIN) { posX = -BOUND + BOUND_MARGIN; dir = 1; }
+            runBlend = THREE.MathUtils.damp(runBlend, 1, 5, dt);
+            const dx = targetX - posX;
+            const dz = targetZ - posZ;
+            const dist = Math.hypot(dx, dz);
 
-            g.root.position.x = posX;
-            g.root.rotation.y = dir > 0 ? Math.PI / 2 : -Math.PI / 2;
+            if (dist > 0.08) {
+                const speed = 1.3;
+                posX += (dx / dist) * speed * dt;
+                posZ += (dz / dist) * speed * dt;
+                const desiredYaw = Math.atan2(dx, dz);
+                facingY = dampAngle(facingY, desiredYaw, 8, dt);
+            }
 
-            const cycle = t * 9;
+            g.root.position.set(posX, 0, posZ);
+            g.root.rotation.y = facingY;
+
+            const cycle = t * 12;
             const swing = Math.sin(cycle);
-            g.rightArm.rotation.x = swing * 0.9;
-            g.leftArm.rotation.x = -swing * 0.9;
-            g.rightLeg.rotation.x = -swing * 1.0;
-            g.leftLeg.rotation.x = swing * 1.0;
-            g.body.position.y = Math.abs(Math.sin(cycle)) * 0.04;
-            g.head.rotation.y = Math.sin(cycle * 0.5) * 0.08;
-            g.head.rotation.z = Math.sin(cycle) * 0.03;
+            g.rightArm.rotation.x = swing * 0.7 * runBlend;
+            g.leftArm.rotation.x = -swing * 0.7 * runBlend;
+            g.rightLeg.rotation.x = -swing * 0.8 * runBlend;
+            g.leftLeg.rotation.x = swing * 0.8 * runBlend;
+            g.body.position.y = Math.abs(Math.sin(cycle)) * 0.04 * runBlend;
+            g.head.rotation.z = Math.sin(cycle) * 0.03 * runBlend;
 
-            if (stateTimer <= 0) {
+            const camYaw = computeCameraLookYaw(g);
+            g.head.rotation.y = dampAngle(g.head.rotation.y, camYaw, 5, dt);
+
+            if (dist <= 0.08 || stateTimer <= 0) {
                 state = 'idle';
-                stateTimer = 1.6 + Math.random() * 2.2;
-                pickNextLook();
+                stateTimer = 1.4 + Math.random() * 2;
+                pickIdleGlance();
             }
         } else if (state === 'idle') {
-            stateTimer -= dt;
-            g.rightArm.rotation.x = THREE.MathUtils.lerp(g.rightArm.rotation.x, 0, 0.08);
-            g.leftArm.rotation.x = THREE.MathUtils.lerp(g.leftArm.rotation.x, 0, 0.08);
-            g.rightLeg.rotation.x = THREE.MathUtils.lerp(g.rightLeg.rotation.x, 0, 0.08);
-            g.leftLeg.rotation.x = THREE.MathUtils.lerp(g.leftLeg.rotation.x, 0, 0.08);
-            g.body.position.y = THREE.MathUtils.lerp(g.body.position.y, Math.sin(t * 1.6) * 0.015, 0.1);
+            runBlend = THREE.MathUtils.damp(runBlend, 0, 6, dt);
+            g.rightArm.rotation.x = THREE.MathUtils.damp(g.rightArm.rotation.x, 0, 6, dt);
+            g.leftArm.rotation.x = THREE.MathUtils.damp(g.leftArm.rotation.x, 0, 6, dt);
+            g.rightLeg.rotation.x = THREE.MathUtils.damp(g.rightLeg.rotation.x, 0, 6, dt);
+            g.leftLeg.rotation.x = THREE.MathUtils.damp(g.leftLeg.rotation.x, 0, 6, dt);
+            g.body.position.y = THREE.MathUtils.damp(g.body.position.y, Math.sin(t * 1.6) * 0.015, 4, dt);
+            g.head.rotation.z = THREE.MathUtils.damp(g.head.rotation.z, 0, 5, dt);
 
-            if (stateTimer < 1.2 && Math.random() < 0.02) pickNextLook();
-            g.head.rotation.y = THREE.MathUtils.lerp(g.head.rotation.y, lookTarget, 0.04);
-            g.head.rotation.z = THREE.MathUtils.lerp(g.head.rotation.z, 0, 0.06);
+            if (stateTimer < 1.3 && Math.random() < 0.02) pickIdleGlance();
+            const camYaw = computeCameraLookYaw(g);
+            const blended = camYaw !== 0 ? camYaw : lookTarget;
+            g.head.rotation.y = dampAngle(g.head.rotation.y, blended, 3, dt);
 
             if (stateTimer <= 0) {
                 state = 'run';
-                stateTimer = 2.5 + Math.random() * 2.5;
-                g.head.rotation.y = 0;
+                stateTimer = 3 + Math.random() * 3;
+                pickDestination();
             }
         } else if (state === 'greet') {
             greetT += dt;
-            g.rightArm.rotation.x = -1.9;
+            g.rightArm.rotation.x = THREE.MathUtils.damp(g.rightArm.rotation.x, -1.9, 10, dt);
             g.rightArm.rotation.z = Math.sin(greetT * 14) * 0.5;
-            g.head.rotation.y = THREE.MathUtils.lerp(g.head.rotation.y, 0, 0.1);
+            g.head.rotation.y = dampAngle(g.head.rotation.y, 0, 6, dt);
             g.body.position.y = Math.abs(Math.sin(greetT * 10)) * 0.03;
 
             if (greetT > 1.3) {
@@ -533,10 +617,11 @@ function animate() {
         }
 
         shadowBlob.position.x = g.root.position.x;
+        shadowBlob.position.z = g.root.position.z;
 
         if (performance.now() < bubbleUntil) {
             g.head.getWorldPosition(headWorldPos);
-            headWorldPos.y += 0.15;
+            headWorldPos.y += 0.14;
             headWorldPos.project(camera);
             const px = (headWorldPos.x * 0.5 + 0.5) * window.innerWidth;
             const py = (-headWorldPos.y * 0.5 + 0.5) * window.innerHeight;
