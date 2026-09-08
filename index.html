@@ -285,7 +285,7 @@ try {
     throw err;
 }
 
-const SKIN_URL = 'https://raw.githubusercontent.com/nako-hikari/support-files/refs/heads/main/assets/Nako_maid2.png';
+const SKIN_URL = 'https://raw.githubusercontent.com/nako-hikari/assets/refs/heads/main/skin/nako_maid.png';
 const TW = 64, TH = 64;
 
 const BONES = {
@@ -309,6 +309,7 @@ const BONES = {
 };
 
 const OVERLAY_BONES = new Set(['hat', 'jacket', 'leftSleeve', 'rightSleeve', 'leftPants', 'rightPants']);
+const BODY_REST_Y = BONES.body.pivot[1] - BONES.waist.pivot[1];
 
 function faceRect(x1, y1, x2, y2) {
     return [
@@ -571,7 +572,7 @@ function animate() {
             g.leftArm.rotation.x = -swing * 0.7 * runBlend;
             g.rightLeg.rotation.x = -swing * 0.8 * runBlend;
             g.leftLeg.rotation.x = swing * 0.8 * runBlend;
-            g.body.position.y = Math.abs(Math.sin(cycle)) * 0.04 * runBlend;
+            g.body.position.y = BODY_REST_Y + Math.abs(Math.sin(cycle)) * 0.04 * runBlend;
             g.head.rotation.z = Math.sin(cycle) * 0.03 * runBlend;
 
             const camYaw = computeCameraLookYaw(g);
@@ -588,7 +589,7 @@ function animate() {
             g.leftArm.rotation.x = THREE.MathUtils.damp(g.leftArm.rotation.x, 0, 6, dt);
             g.rightLeg.rotation.x = THREE.MathUtils.damp(g.rightLeg.rotation.x, 0, 6, dt);
             g.leftLeg.rotation.x = THREE.MathUtils.damp(g.leftLeg.rotation.x, 0, 6, dt);
-            g.body.position.y = THREE.MathUtils.damp(g.body.position.y, Math.sin(t * 1.6) * 0.015, 4, dt);
+            g.body.position.y = THREE.MathUtils.damp(g.body.position.y, BODY_REST_Y + Math.sin(t * 1.6) * 0.015, 4, dt);
             g.head.rotation.z = THREE.MathUtils.damp(g.head.rotation.z, 0, 5, dt);
 
             if (stateTimer < 1.3 && Math.random() < 0.02) pickIdleGlance();
@@ -606,7 +607,7 @@ function animate() {
             g.rightArm.rotation.x = THREE.MathUtils.damp(g.rightArm.rotation.x, -1.9, 10, dt);
             g.rightArm.rotation.z = Math.sin(greetT * 14) * 0.5;
             g.head.rotation.y = dampAngle(g.head.rotation.y, 0, 6, dt);
-            g.body.position.y = Math.abs(Math.sin(greetT * 10)) * 0.03;
+            g.body.position.y = BODY_REST_Y + Math.abs(Math.sin(greetT * 10)) * 0.03;
 
             if (greetT > 1.3) {
                 state = 'idle';
