@@ -6,6 +6,61 @@
 <title>Nako Hikari</title>
 <link rel="stylesheet" href="/css/nako.css">
 <style>
+#charStage {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+#charStage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.char-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    letter-spacing: var(--ls-wide);
+    text-align: center;
+    padding: 0 var(--space-lg);
+    transition: opacity var(--transition-slow);
+}
+
+.char-loading.hidden { opacity: 0; }
+
+.char-bubble {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -100%);
+    background: var(--container-bg);
+    border: var(--border-width) solid var(--border-color);
+    color: var(--text-bright);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-full);
+    font-size: var(--fs-sm);
+    box-shadow: var(--shadow-soft);
+    opacity: 0;
+    white-space: nowrap;
+    transition: opacity var(--transition-normal);
+}
+
+.char-bubble.show { opacity: 1; }
+
+.wrapper {
+    position: relative;
+    z-index: 1;
+}
+
 .hero {
     display: flex;
     flex-direction: column;
@@ -15,23 +70,9 @@
     padding: var(--space-3xl) 0 var(--space-2xl);
 }
 
-.hero-kicker {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    letter-spacing: var(--ls-wide);
-    text-transform: uppercase;
-    color: var(--text-clickable-link);
-}
-
 .hero h1 {
     font-size: 3rem;
     margin: 0;
-}
-
-.hero p {
-    max-width: 520px;
-    color: var(--text-muted);
-    line-height: var(--lh-relaxed);
 }
 
 .hero-media {
@@ -74,92 +115,14 @@
 @keyframes rise {
     to { opacity: 1; transform: translateY(0); }
 }
-
-.char-section {
-    padding: var(--space-2xl) 0 var(--space-3xl);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-sm);
-}
-
-.char-section h2 { margin-bottom: 0; }
-
-.char-hint {
-    color: var(--text-muted);
-    font-size: var(--fs-sm);
-    margin: 0 0 var(--space-md);
-}
-
-.char-viewport {
-    position: relative;
-    width: 100%;
-    max-width: 900px;
-    height: 460px;
-    border-radius: var(--radius-lg);
-    border: var(--border-width) solid var(--border-color);
-    background:
-        radial-gradient(ellipse at 50% 30%, var(--accent-dark-300) 0%, transparent 60%),
-        linear-gradient(180deg, var(--container-bg) 0%, var(--box-bg) 100%);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-    cursor: grab;
-}
-
-.char-viewport:active { cursor: grabbing; }
-
-.char-viewport canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.char-loading {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    letter-spacing: var(--ls-wide);
-    transition: opacity var(--transition-slow);
-    pointer-events: none;
-}
-
-.char-loading.hidden { opacity: 0; }
-
-.char-bubble {
-    position: absolute;
-    top: var(--space-lg);
-    left: 50%;
-    transform: translate(-50%, 0);
-    background: var(--container-bg);
-    border: var(--border-width) solid var(--border-color);
-    color: var(--text-bright);
-    padding: var(--space-xs) var(--space-md);
-    border-radius: var(--radius-full);
-    font-size: var(--fs-sm);
-    box-shadow: var(--shadow-soft);
-    opacity: 0;
-    pointer-events: none;
-    z-index: var(--z-tooltip);
-}
-
-.char-bubble.show {
-    animation: bubble-pop 1.6s ease forwards;
-}
-
-@keyframes bubble-pop {
-    0% { opacity: 0; transform: translate(-50%, 6px); }
-    15% { opacity: 1; transform: translate(-50%, 0); }
-    80% { opacity: 1; transform: translate(-50%, 0); }
-    100% { opacity: 0; transform: translate(-50%, -6px); }
-}
 </style>
 </head>
 <body>
+
+<div id="charStage">
+    <div class="char-loading" id="charLoading">loading nako…</div>
+    <div class="char-bubble" id="charBubble">Hii~ ✨</div>
+</div>
 
 <div class="theme-toggle-row">
     <button class="theme-toggle interactive" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -170,9 +133,7 @@
 <div class="wrapper">
 
     <section class="hero">
-        <span class="hero-kicker">Nako Hikari</span>
         <h1>Nako Hikari</h1>
-        <p>Bedrock command references and creator tools, built for the way you actually play and build.</p>
 
         <div class="hero-media">
             <img src="https://raw.githubusercontent.com/nako-hikari/assets/main/images/nako-main-page.gif" alt="Nako Hikari">
@@ -183,17 +144,8 @@
                 <button class="primary interactive">Bedrock Commands</button>
             </a>
             <a href="https://nako-tools.vercel.app" target="_blank" rel="noopener">
-                <button class="secondary interactive">Nako Tools</button>
+                <button class="primary interactive">Nako Tools</button>
             </a>
-        </div>
-    </section>
-
-    <section class="char-section">
-        <h2>Say Hi</h2>
-        <p class="char-hint">Drag to look around, scroll to zoom, click her to say hi.</p>
-        <div class="char-viewport" id="charViewport">
-            <div class="char-loading" id="charLoading">loading nako…</div>
-            <div class="char-bubble" id="charBubble">Hii~ ✨</div>
         </div>
     </section>
 
@@ -306,8 +258,21 @@ document.addEventListener('keydown', e => {
 </script>
 
 <script type="module">
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+const loadingEl = document.getElementById('charLoading');
+
+function fail(label, err) {
+    console.error('[nako-character]', label, err);
+    loadingEl.textContent = 'nako failed to load: ' + label;
+    loadingEl.classList.remove('hidden');
+}
+
+let THREE;
+try {
+    THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
+} catch (err) {
+    fail('three.js did not load (check network/CDN access)', err);
+    throw err;
+}
 
 const SKIN_URL = 'https://raw.githubusercontent.com/nako-hikari/assets/main/skin/nako_maid.png';
 const TW = 64, TH = 64;
@@ -366,7 +331,6 @@ function makeCube(origin, size, uv, inflate, material) {
     applyBoxUV(geo, uv[0], uv[1], w, h, d);
     const mesh = new THREE.Mesh(geo, material);
     mesh.position.set(ox + w / 2, oy + h / 2, oz + d / 2);
-    mesh.castShadow = true;
     return mesh;
 }
 
@@ -407,94 +371,94 @@ function buildCharacter(texture) {
         groups[data.parent].add(groups[name]);
     });
 
-    const scale = 1 / 16;
-    groups.root.scale.setScalar(scale);
+    groups.root.scale.setScalar(1 / 16);
     return groups;
 }
 
-const viewport = document.getElementById('charViewport');
-const loadingEl = document.getElementById('charLoading');
+const stage = document.getElementById('charStage');
 const bubbleEl = document.getElementById('charBubble');
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x1a1220, 6, 16);
 
-const camera = new THREE.PerspectiveCamera(35, viewport.clientWidth / viewport.clientHeight, 0.1, 100);
-camera.position.set(0, 1.6, 4.2);
+const CAM_DIST = 6.5;
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 1.6, CAM_DIST);
+camera.lookAt(0, 1.0, 0);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+let renderer;
+try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+} catch (err) {
+    fail('WebGL is unavailable in this browser', err);
+    throw err;
+}
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(viewport.clientWidth, viewport.clientHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000, 0);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-viewport.appendChild(renderer.domElement);
+stage.appendChild(renderer.domElement);
 
-const hemi = new THREE.HemisphereLight(0xcbb6e0, 0x1a1220, 0.9);
-scene.add(hemi);
-
-const key = new THREE.DirectionalLight(0xffffff, 1.4);
+scene.add(new THREE.HemisphereLight(0xcbb6e0, 0x1a1220, 1.0));
+const key = new THREE.DirectionalLight(0xffffff, 1.5);
 key.position.set(2.5, 4, 3);
-key.castShadow = true;
-key.shadow.mapSize.set(1024, 1024);
-key.shadow.camera.near = 1;
-key.shadow.camera.far = 12;
-key.shadow.camera.left = -3;
-key.shadow.camera.right = 3;
-key.shadow.camera.top = 3;
-key.shadow.camera.bottom = -3;
 scene.add(key);
-
 const rim = new THREE.DirectionalLight(0x9d6bc9, 0.6);
 rim.position.set(-3, 2, -3);
 scene.add(rim);
 
-const groundGeo = new THREE.CircleGeometry(6, 48);
-const groundMat = new THREE.ShadowMaterial({ opacity: 0.35 });
-const ground = new THREE.Mesh(groundGeo, groundMat);
-ground.rotation.x = -Math.PI / 2;
-ground.receiveShadow = true;
-scene.add(ground);
+const shadowBlob = new THREE.Mesh(
+    new THREE.CircleGeometry(0.42, 32),
+    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.28 })
+);
+shadowBlob.rotation.x = -Math.PI / 2;
+shadowBlob.position.y = 0.01;
+scene.add(shadowBlob);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.target.set(0, 1.0, 0);
-controls.minDistance = 2.2;
-controls.maxDistance = 7;
-controls.maxPolarAngle = Math.PI * 0.53;
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.6;
-controls.update();
+let BOUND = 3;
+function updateBounds() {
+    const vFov = (camera.fov * Math.PI) / 180;
+    const visibleHeight = 2 * Math.tan(vFov / 2) * CAM_DIST;
+    const visibleWidth = visibleHeight * camera.aspect;
+    BOUND = (visibleWidth / 2) * 0.82;
+}
+updateBounds();
 
 let character = null;
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
 const loader = new THREE.TextureLoader();
-loader.setCrossOrigin('anonymous');
-loader.load(SKIN_URL, texture => {
-    texture.magFilter = THREE.NearestFilter;
-    texture.minFilter = THREE.NearestFilter;
-    texture.generateMipmaps = false;
-    texture.colorSpace = THREE.SRGBColorSpace;
+loader.load(
+    SKIN_URL,
+    texture => {
+        try {
+            texture.magFilter = THREE.NearestFilter;
+            texture.minFilter = THREE.NearestFilter;
+            texture.generateMipmaps = false;
+            texture.colorSpace = THREE.SRGBColorSpace;
 
-    character = buildCharacter(texture);
-    scene.add(character.root);
-    loadingEl.classList.add('hidden');
-}, undefined, () => {
-    loadingEl.textContent = 'could not load nako';
-});
+            character = buildCharacter(texture);
+            scene.add(character.root);
+            loadingEl.classList.add('hidden');
+        } catch (err) {
+            fail('building the model failed', err);
+        }
+    },
+    undefined,
+    err => fail('the skin texture could not be fetched (CORS or 404)', err)
+);
 
-const BOUND = 1.1;
+const BOUND_MARGIN = 0;
 let dir = 1;
 let posX = 0;
 let state = 'run';
 let stateTimer = 2 + Math.random() * 1.5;
 let lookTarget = 0;
 let greetT = 0;
+let bubbleUntil = 0;
 
 const clock = new THREE.Clock();
+const headWorldPos = new THREE.Vector3();
 
 function pickNextLook() {
     lookTarget = (Math.random() - 0.5) * 1.4;
@@ -505,15 +469,18 @@ function animate() {
     const dt = Math.min(clock.getDelta(), 0.05);
     const t = clock.elapsedTime;
 
+    camera.position.x = Math.sin(t * 0.05) * 0.5;
+    camera.lookAt(0, 1.0, 0);
+
     if (character) {
         const g = character;
-        stateTimer -= dt;
 
         if (state === 'run') {
-            const speed = 0.55;
+            stateTimer -= dt;
+            const speed = 0.6;
             posX += dir * speed * dt;
-            if (posX > BOUND) { posX = BOUND; dir = -1; }
-            if (posX < -BOUND) { posX = -BOUND; dir = 1; }
+            if (posX > BOUND - BOUND_MARGIN) { posX = BOUND - BOUND_MARGIN; dir = -1; }
+            if (posX < -BOUND + BOUND_MARGIN) { posX = -BOUND + BOUND_MARGIN; dir = 1; }
 
             g.root.position.x = posX;
             g.root.rotation.y = dir > 0 ? Math.PI / 2 : -Math.PI / 2;
@@ -534,6 +501,7 @@ function animate() {
                 pickNextLook();
             }
         } else if (state === 'idle') {
+            stateTimer -= dt;
             g.rightArm.rotation.x = THREE.MathUtils.lerp(g.rightArm.rotation.x, 0, 0.08);
             g.leftArm.rotation.x = THREE.MathUtils.lerp(g.leftArm.rotation.x, 0, 0.08);
             g.rightLeg.rotation.x = THREE.MathUtils.lerp(g.rightLeg.rotation.x, 0, 0.08);
@@ -563,36 +531,46 @@ function animate() {
                 g.rightArm.rotation.z = 0;
             }
         }
+
+        shadowBlob.position.x = g.root.position.x;
+
+        if (performance.now() < bubbleUntil) {
+            g.head.getWorldPosition(headWorldPos);
+            headWorldPos.y += 0.15;
+            headWorldPos.project(camera);
+            const px = (headWorldPos.x * 0.5 + 0.5) * window.innerWidth;
+            const py = (-headWorldPos.y * 0.5 + 0.5) * window.innerHeight;
+            bubbleEl.style.left = px + 'px';
+            bubbleEl.style.top = py + 'px';
+            bubbleEl.classList.add('show');
+        } else {
+            bubbleEl.classList.remove('show');
+        }
     }
 
-    controls.update();
     renderer.render(scene, camera);
 }
 animate();
 
-renderer.domElement.addEventListener('click', e => {
+window.addEventListener('click', e => {
     if (!character) return;
-    const rect = renderer.domElement.getBoundingClientRect();
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObject(character.root, true);
     if (hits.length > 0) {
         state = 'greet';
         greetT = 0;
-        bubbleEl.classList.remove('show');
-        void bubbleEl.offsetWidth;
-        bubbleEl.classList.add('show');
+        bubbleUntil = performance.now() + 1600;
     }
 });
 
-function handleResize() {
-    const w = viewport.clientWidth, h = viewport.clientHeight;
-    camera.aspect = w / h;
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-}
-window.addEventListener('resize', handleResize);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    updateBounds();
+});
 </script>
 
 </body>
