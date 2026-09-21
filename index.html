@@ -32,6 +32,46 @@ body { background: transparent; }
     gap: var(--space-sm);
 }
 
+.brand-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-weight: 600;
+    border: none;
+}
+
+.brand-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-whatsapp {
+    background: #25D366;
+    color: #ffffff;
+}
+
+.btn-whatsapp:hover {
+    background: #1fb959;
+}
+
+.btn-kofi-pink {
+    background: #FF5E5B;
+    color: #ffffff;
+}
+
+.btn-kofi-pink:hover {
+    background: #ff4340;
+}
+
+.btn-kofi-blue {
+    background: #13C3FF;
+    color: #ffffff;
+}
+
+.btn-kofi-blue:hover {
+    background: #00aee8;
+}
+
 .hub-grid {
     margin-top: var(--space-xl);
 }
@@ -81,6 +121,15 @@ body { background: transparent; }
     display: flex;
     align-items: center;
 }
+
+.footer-editorial-socials img {
+    filter: invert(1);
+    opacity: 0.85;
+}
+
+html[data-theme="light"] .footer-editorial-socials img {
+    filter: none;
+}
 </style>
 </head>
 <body>
@@ -104,12 +153,19 @@ body { background: transparent; }
         <img class="hero-avatar" src="/profile.png" alt="Nako Hikari">
         <p class="eyebrow">Nako Hikari</p>
         <h1 class="display">
-            Making stuff.... <span class="text-highlight sparkle-wrap">Maybe..</span><img class="icon icon-lg sparkle" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sparkle_1.png" alt="">yeah.
+            Making stuff....<br>
+            <span class="text-highlight">Maybe..</span><img class="icon icon-lg sparkle" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sparkle_1.png" alt="">yeah.
         </h1>
         <p>Everything's on here, join the community, see latest update, or support me :3</p>
         <div class="hero-ctas">
-            <a class="primary gradient pill interactive magnetic" href="https://whatsapp.com/channel/0029VbEC21OKrWR3TYTSYi46" target="_blank" rel="noopener">Join the WhatsApp Channel</a>
-            <a class="secondary pill interactive" href="https://ko-fi.com/arialicee" target="_blank" rel="noopener">Support on Ko-fi</a>
+            <a class="pill interactive magnetic brand-btn btn-whatsapp" href="https://whatsapp.com/channel/0029VbEC21OKrWR3TYTSYi46" target="_blank" rel="noopener">
+                <img src="/ui/wa-channel.png" alt="">
+                Join my WhatsApp Channel
+            </a>
+            <a class="pill interactive brand-btn btn-kofi-pink" href="https://ko-fi.com/arialicee" target="_blank" rel="noopener">
+                <img src="/ui/kofi.png" alt="">
+                Support on Ko-fi
+            </a>
         </div>
     </section>
 
@@ -120,7 +176,7 @@ body { background: transparent; }
                 <span>Latest upload</span>
             </div>
             <div id="videoCardBody">
-                <p class="video-title">Checking the channel for the newest video&hellip;</p>
+                <p class="video-title">Loading the latest video.</p>
             </div>
         </div>
 
@@ -130,7 +186,7 @@ body { background: transparent; }
                 <span>Shop</span>
             </div>
             <p>Merch, digital goods, whatever's currently in the Ko-fi shop.</p>
-            <a class="primary pill interactive hub-item-cta" href="https://ko-fi.com/arialicee/shop" target="_blank" rel="noopener">Browse the shop</a>
+            <a class="pill interactive brand-btn btn-kofi-blue hub-item-cta" href="https://ko-fi.com/arialicee/shop" target="_blank" rel="noopener">Browse the shop</a>
         </div>
 
         <div class="card bento-item reveal">
@@ -139,7 +195,7 @@ body { background: transparent; }
                 <span>Membership</span>
             </div>
             <p>Ko-fi membership tiers, for all the chad and princess.. (i haven't make ot yet :/)</p>
-            <a class="primary pill interactive hub-item-cta" href="https://ko-fi.com/arialicee/tiers" target="_blank" rel="noopener">See the tiers</a>
+            <a class="pill interactive brand-btn btn-kofi-blue hub-item-cta" href="https://ko-fi.com/arialicee/tiers" target="_blank" rel="noopener">See the tiers</a>
         </div>
 
         <div class="card bento-item--wide reveal">
@@ -236,7 +292,7 @@ async function renderLatestVideo() {
 }
 
 function openSettings() {
-    showModal('Settings', 'helllow.');
+    showModal('Settings', 'Nothing here yet, check back soon.');
 }
 
 function toggleTheme() {
