@@ -32,44 +32,54 @@ body { background: transparent; }
     gap: var(--space-sm);
 }
 
-.brand-btn {
+.btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    align-self: flex-start;
     gap: var(--space-xs);
+    width: fit-content;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
     font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    white-space: nowrap;
     border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-.brand-btn img {
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32);
+}
+
+.btn img {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
 }
 
-.btn-whatsapp {
-    background: #25D366;
-    color: #ffffff;
+.btn-whatsapp { background: #25D366; color: #ffffff; }
+.btn-whatsapp:hover { background: #1fb959; }
+
+.btn-kofi-pink { background: #FF5E5B; color: #ffffff; }
+.btn-kofi-pink:hover { background: #ff4340; }
+
+.btn-kofi-blue { background: #13C3FF; color: #ffffff; }
+.btn-kofi-blue:hover { background: #00aee8; }
+
+.btn-neutral {
+    background: var(--surface-alt, rgba(255, 255, 255, 0.08));
+    color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow: none;
 }
 
-.btn-whatsapp:hover {
-    background: #1fb959;
-}
-
-.btn-kofi-pink {
-    background: #FF5E5B;
-    color: #ffffff;
-}
-
-.btn-kofi-pink:hover {
-    background: #ff4340;
-}
-
-.btn-kofi-blue {
-    background: #13C3FF;
-    color: #ffffff;
-}
-
-.btn-kofi-blue:hover {
-    background: #00aee8;
+.btn-neutral:hover {
+    background: var(--surface-alt-hover, rgba(255, 255, 255, 0.14));
 }
 
 .hub-grid {
@@ -110,7 +120,6 @@ body { background: transparent; }
 
 .hub-item-cta {
     margin-top: var(--space-md);
-    display: inline-flex;
 }
 
 .settings-slot {
@@ -158,11 +167,11 @@ html[data-theme="light"] .footer-editorial-socials img {
         </h1>
         <p>Everything's on here, join the community, see latest update, or support me :3</p>
         <div class="hero-ctas">
-            <a class="pill interactive magnetic brand-btn btn-whatsapp" href="https://whatsapp.com/channel/0029VbEC21OKrWR3TYTSYi46" target="_blank" rel="noopener">
+            <a class="btn btn-whatsapp interactive magnetic" href="https://whatsapp.com/channel/0029VbEC21OKrWR3TYTSYi46" target="_blank" rel="noopener">
                 <img src="/ui/wa-channel.png" alt="">
                 Join my WhatsApp Channel
             </a>
-            <a class="pill interactive brand-btn btn-kofi-pink" href="https://ko-fi.com/arialicee" target="_blank" rel="noopener">
+            <a class="btn btn-kofi-pink interactive" href="https://ko-fi.com/arialicee" target="_blank" rel="noopener">
                 <img src="/ui/kofi.png" alt="">
                 Support on Ko-fi
             </a>
@@ -186,7 +195,7 @@ html[data-theme="light"] .footer-editorial-socials img {
                 <span>Shop</span>
             </div>
             <p>Merch, digital goods, whatever's currently in the Ko-fi shop.</p>
-            <a class="pill interactive brand-btn btn-kofi-blue hub-item-cta" href="https://ko-fi.com/arialicee/shop" target="_blank" rel="noopener">Browse the shop</a>
+            <a class="btn btn-kofi-blue interactive hub-item-cta" href="https://ko-fi.com/arialicee/shop" target="_blank" rel="noopener">Browse the shop</a>
         </div>
 
         <div class="card bento-item reveal">
@@ -195,7 +204,7 @@ html[data-theme="light"] .footer-editorial-socials img {
                 <span>Membership</span>
             </div>
             <p>Ko-fi membership tiers, for all the chad and princess.. (i haven't make ot yet :/)</p>
-            <a class="pill interactive brand-btn btn-kofi-blue hub-item-cta" href="https://ko-fi.com/arialicee/tiers" target="_blank" rel="noopener">See the tiers</a>
+            <a class="btn btn-kofi-blue interactive hub-item-cta" href="https://ko-fi.com/arialicee/tiers" target="_blank" rel="noopener">See the tiers</a>
         </div>
 
         <div class="card bento-item--wide reveal">
@@ -258,7 +267,7 @@ function renderAnnouncement() {
         link.href = NAKO_CONFIG.announcement.link;
         link.target = '_blank';
         link.rel = 'noopener';
-        link.className = 'hub-item-cta';
+        link.className = 'btn btn-neutral interactive hub-item-cta';
         link.textContent = 'Read more';
         body.after(link);
     }
@@ -268,7 +277,7 @@ async function renderLatestVideo() {
     const body = document.getElementById('videoCardBody');
     const channelUrl = `https://www.youtube.com/@${NAKO_CONFIG.youtubeHandle}`;
     const fallback = () => {
-        body.innerHTML = `<p class="video-title">Catch the latest upload on the channel.</p><a class="primary pill interactive hub-item-cta" href="${channelUrl}" target="_blank" rel="noopener">Watch on YouTube</a>`;
+        body.innerHTML = `<p class="video-title">Catch the latest upload on the channel.</p><a class="btn btn-neutral interactive hub-item-cta" href="${channelUrl}" target="_blank" rel="noopener">Watch on YouTube</a>`;
     };
 
     if (!NAKO_CONFIG.youtubeChannelId) {
@@ -285,7 +294,7 @@ async function renderLatestVideo() {
         const title = entry.querySelector('title').textContent;
         const videoId = entry.getElementsByTagNameNS('*', 'videoId')[0].textContent;
         const thumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-        body.innerHTML = `<img class="video-thumb" src="${thumb}" alt="${title}"><p class="video-title">${title}</p><a class="primary pill interactive hub-item-cta" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">Watch now</a>`;
+        body.innerHTML = `<img class="video-thumb" src="${thumb}" alt="${title}"><p class="video-title">${title}</p><a class="btn btn-neutral interactive hub-item-cta" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">Watch now</a>`;
     } catch (err) {
         fallback();
     }
