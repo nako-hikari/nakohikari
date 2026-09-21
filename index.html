@@ -4,184 +4,171 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nako Hikari</title>
+<link rel="icon" href="/profile.png">
 <link rel="stylesheet" href="/css/nako.css">
 <style>
-html, body {
-    height: 100%;
-    overflow: hidden;
-}
-
-#charStage {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-#charStage canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.char-loading {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    letter-spacing: var(--ls-wide);
-    text-align: center;
-    padding: 0 var(--space-lg);
-    transition: opacity var(--transition-slow);
-}
-
-.char-loading.hidden { opacity: 0; }
-
-.char-bubble {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -100%);
-    background: var(--container-bg);
-    border: var(--border-width) solid var(--border-color);
-    color: var(--text-bright);
-    padding: var(--space-xs) var(--space-md);
-    border-radius: var(--radius-full);
-    font-size: var(--fs-sm);
-    box-shadow: var(--shadow-soft);
-    opacity: 0;
-    white-space: nowrap;
-    transition: opacity var(--transition-normal);
-}
-
-.char-bubble.show { opacity: 1; }
-
-.wrapper {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+body { background: transparent; }
 
 .hero {
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: var(--space-md);
-    padding: var(--space-xl) 0 0;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    padding-top: var(--space-xl);
 }
 
-.hero h1 {
-    font-size: 2.6rem;
-    margin: 0;
+.hero-avatar {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
 }
 
-.hero-media {
-    width: 50%;
-    max-width: 640px;
-    min-width: 180px;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    border: var(--border-width) solid var(--border-color);
-    box-shadow: var(--shadow-deep);
-    opacity: 0;
-    transform: translateY(12px);
-    animation: rise 0.7s ease forwards 0.15s;
-}
-
-.hero-media img {
-    display: block;
-    width: 100%;
-    height: auto;
-    filter: none;
-}
-
-.cta-row {
+.hero-ctas {
     display: flex;
-    gap: var(--space-md);
     flex-wrap: wrap;
-    justify-content: center;
+    gap: var(--space-sm);
 }
 
-.cta-row a {
-    text-decoration: none;
+.hub-grid {
+    margin-top: var(--space-xl);
 }
 
-.cta-row button {
-    display: inline-flex;
+.hub-item-head {
+    display: flex;
     align-items: center;
     gap: var(--space-xs);
-    min-width: 200px;
-    justify-content: center;
+    margin-bottom: var(--space-sm);
 }
 
-@keyframes rise {
-    to { opacity: 1; transform: translateY(0); }
+.hub-item-head span {
+    font-size: 0.85rem;
+    letter-spacing: var(--ls-tight);
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.video-thumb {
+    width: 100%;
+    border-radius: var(--radius-md);
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin-bottom: var(--space-sm);
+}
+
+.video-title {
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.announcement-body {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.hub-item-cta {
+    margin-top: var(--space-md);
+    display: inline-flex;
+}
+
+.settings-slot {
+    margin-left: auto;
+}
+
+.theme-toggle-row {
+    display: flex;
+    align-items: center;
 }
 </style>
 </head>
 <body>
-
-<div id="charStage">
-    <div class="char-loading" id="charLoading">loading nako…</div>
-    <div class="char-bubble" id="charBubble">Hii~ ✨</div>
-</div>
-
-<div class="theme-toggle-row">
-    <button class="theme-toggle interactive" onclick="toggleTheme()" aria-label="Toggle theme">
-        <img id="theme-icon" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/moon.png" alt="">
-    </button>
-</div>
+<div class="mesh-bg"></div>
+<div class="grain-overlay"></div>
 
 <div class="wrapper">
-
-    <section class="hero">
-        <h1>Nako Hikari</h1>
-
-        <div class="hero-media">
-            <img src="https://raw.githubusercontent.com/nako-hikari/assets/main/images/nako-main-page.gif" alt="Nako Hikari">
-        </div>
-
-        <div class="cta-row">
-            <a href="https://bedrock-commands.vercel.app" target="_blank" rel="noopener">
-                <button class="primary interactive">Bedrock Commands</button>
-            </a>
-            <a href="https://nako-tools.vercel.app" target="_blank" rel="noopener">
-                <button class="primary interactive">Nako Tools</button>
-            </a>
-        </div>
-    </section>
-
-    <div class="footer">
-        <div class="footer-title">Nako Hikari</div>
-        <div class="footer-links">
-            <a href="https://github.com/nako-hikari/" target="_blank" class="social">
-                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub">
-                GitHub
-            </a>
-            <a href="https://m.youtube.com/@NaCryst" target="_blank" class="social">
-                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
-                YouTube
-            </a>
-            <a href="https://www.tiktok.com/@nako_hikari_mc" target="_blank" class="social">
-                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
-                TikTok
-            </a>
-            <a href="https://ko-fi.com/arialicee" target="_blank" class="social kofi">
-                <img src="https://raw.githubusercontent.com/nako-hikari/support-files/main/assets/kofi-icon.png" alt="Ko-fi">
-                Support me on Ko-fi
-            </a>
+    <div class="theme-toggle-row">
+        <button class="theme-toggle interactive" onclick="toggleTheme()" aria-label="Toggle theme">
+            <img id="theme-icon" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/moon.png" alt="">
+        </button>
+        <div class="settings-slot">
+            <button class="secondary pill interactive" onclick="openSettings()" aria-label="Settings">
+                <img class="icon icon-md" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/settings.png" alt="">
+                Settings
+            </button>
         </div>
     </div>
 
+    <section class="hero">
+        <img class="hero-avatar" src="/profile.png" alt="Nako Hikari">
+        <p class="eyebrow">Nako Hikari</p>
+        <h1 class="display">
+            Making stuff.... <span class="text-highlight sparkle-wrap">Maybe..</span><img class="icon icon-lg sparkle" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sparkle_1.png" alt="">yeah.
+        </h1>
+        <p>Everything's on here, join the community, see latest update, or support me :3</p>
+        <div class="hero-ctas">
+            <a class="primary gradient pill interactive magnetic" href="https://whatsapp.com/channel/0029VbEC21OKrWR3TYTSYi46" target="_blank" rel="noopener">Join the WhatsApp Channel</a>
+            <a class="secondary pill interactive" href="https://ko-fi.com/arialicee" target="_blank" rel="noopener">Support on Ko-fi</a>
+        </div>
+    </section>
+
+    <section class="bento-grid hub-grid">
+        <div class="card bento-item--wide reveal" id="videoCard">
+            <div class="hub-item-head">
+                <img class="icon icon-md" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/video_embed.png" alt="">
+                <span>Latest upload</span>
+            </div>
+            <div id="videoCardBody">
+                <p class="video-title">Checking the channel for the newest video&hellip;</p>
+            </div>
+        </div>
+
+        <div class="card bento-item reveal">
+            <div class="hub-item-head">
+                <img class="icon icon-md" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/tag.png" alt="">
+                <span>Shop</span>
+            </div>
+            <p>Merch, digital goods, whatever's currently in the Ko-fi shop.</p>
+            <a class="primary pill interactive hub-item-cta" href="https://ko-fi.com/arialicee/shop" target="_blank" rel="noopener">Browse the shop</a>
+        </div>
+
+        <div class="card bento-item reveal">
+            <div class="hub-item-head">
+                <img class="icon icon-md" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/star.png" alt="">
+                <span>Membership</span>
+            </div>
+            <p>Ko-fi membership tiers, for all the chad and princess.. (i haven't make ot yet :/)</p>
+            <a class="primary pill interactive hub-item-cta" href="https://ko-fi.com/arialicee/tiers" target="_blank" rel="noopener">See the tiers</a>
+        </div>
+
+        <div class="card bento-item--wide reveal">
+            <div class="hub-item-head">
+                <img class="icon icon-md" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/note.png" alt="">
+                <span>Latest announcement</span>
+            </div>
+            <p class="announcement-body" id="announcementBody"></p>
+        </div>
+    </section>
+
+    <div class="footer-editorial">
+        <p class="footer-editorial-cta">Let's build something.</p>
+        <div class="footer-editorial-socials">
+            <a href="https://github.com/nako-hikari/" target="_blank" class="social" aria-label="GitHub">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub">
+            </a>
+            <a href="https://m.youtube.com/@NaCryst" target="_blank" class="social" aria-label="YouTube">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube">
+            </a>
+            <a href="https://www.tiktok.com/@nako_hikari_mc" target="_blank" class="social" aria-label="TikTok">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok">
+            </a>
+            <a href="https://ko-fi.com/arialicee" target="_blank" class="social kofi" aria-label="Support on Ko-fi">
+                <img src="https://raw.githubusercontent.com/nako-hikari/support-files/main/assets/kofi-icon.png" alt="Ko-fi">
+            </a>
+        </div>
+        <p class="footer-editorial-fine">Nako Hikari</p>
+    </div>
 </div>
 
 <div class="modal-overlay" id="nakoModal">
@@ -198,6 +185,60 @@ html, body {
 </div>
 
 <script>
+const NAKO_CONFIG = {
+    youtubeChannelId: "",
+    youtubeHandle: "NaCryst",
+    announcement: {
+        text: "nothing to see...",
+        link: ""
+    }
+};
+
+function renderAnnouncement() {
+    const body = document.getElementById('announcementBody');
+    body.textContent = NAKO_CONFIG.announcement.text;
+    if (NAKO_CONFIG.announcement.link) {
+        const link = document.createElement('a');
+        link.href = NAKO_CONFIG.announcement.link;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.className = 'hub-item-cta';
+        link.textContent = 'Read more';
+        body.after(link);
+    }
+}
+
+async function renderLatestVideo() {
+    const body = document.getElementById('videoCardBody');
+    const channelUrl = `https://www.youtube.com/@${NAKO_CONFIG.youtubeHandle}`;
+    const fallback = () => {
+        body.innerHTML = `<p class="video-title">Catch the latest upload on the channel.</p><a class="primary pill interactive hub-item-cta" href="${channelUrl}" target="_blank" rel="noopener">Watch on YouTube</a>`;
+    };
+
+    if (!NAKO_CONFIG.youtubeChannelId) {
+        fallback();
+        return;
+    }
+
+    try {
+        const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${NAKO_CONFIG.youtubeChannelId}`;
+        const res = await fetch(feedUrl);
+        if (!res.ok) throw new Error('feed unavailable');
+        const xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+        const entry = xml.querySelector('entry');
+        const title = entry.querySelector('title').textContent;
+        const videoId = entry.getElementsByTagNameNS('*', 'videoId')[0].textContent;
+        const thumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+        body.innerHTML = `<img class="video-thumb" src="${thumb}" alt="${title}"><p class="video-title">${title}</p><a class="primary pill interactive hub-item-cta" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">Watch now</a>`;
+    } catch (err) {
+        fallback();
+    }
+}
+
+function openSettings() {
+    showModal('Settings', 'About and supporters pages are coming soon — this is just the link hub for now.');
+}
+
 function toggleTheme() {
     const root = document.documentElement;
     const btn = document.querySelector('.theme-toggle');
@@ -266,398 +307,28 @@ document.getElementById('nakoModal').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeNakoModal();
 });
-</script>
 
-<script type="module">
-const loadingEl = document.getElementById('charLoading');
+window.alert = msg => showModal('Notice', String(msg));
 
-function fail(label, err) {
-    console.error('[nako-character]', label, err);
-    loadingEl.textContent = 'nako failed to load: ' + label;
-    loadingEl.classList.remove('hidden');
-}
-
-let THREE;
-try {
-    THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
-} catch (err) {
-    fail('three.js did not load (check network/CDN access)', err);
-    throw err;
-}
-
-const SKIN_URL = 'https://raw.githubusercontent.com/nako-hikari/assets/refs/heads/main/skin/nako-maid.png';
-const TW = 64, TH = 64;
-
-const BONES = {
-    root:  { parent: null,   pivot: [0, 0, 0] },
-    waist: { parent: 'root', pivot: [0, 12, 0] },
-    body:  { parent: 'waist', pivot: [0, 24, 0], cubes: [{ origin: [-4, 12, -2], size: [8, 12, 4], uv: [16, 16] }] },
-    head:  { parent: 'body', pivot: [0, 24, 0], cubes: [{ origin: [-4, 24, -4], size: [8, 8, 8], uv: [0, 0] }] },
-    hat:   { parent: 'head', pivot: [0, 24, 0], cubes: [{ origin: [-4, 24, -4], size: [8, 8, 8], uv: [32, 0], inflate: 0.5 }] },
-    cape:  { parent: 'body', pivot: [0, 24, 3] },
-    leftArm:    { parent: 'body', pivot: [5, 22, 0], cubes: [{ origin: [4, 12, -2], size: [3, 12, 4], uv: [32, 48] }] },
-    leftSleeve: { parent: 'leftArm', pivot: [5, 22, 0], cubes: [{ origin: [4, 12, -2], size: [3, 12, 4], uv: [48, 48], inflate: 0.25 }] },
-    leftItem:   { parent: 'leftArm', pivot: [6, 15, 1] },
-    rightArm:    { parent: 'body', pivot: [-5, 22, 0], cubes: [{ origin: [-7, 12, -2], size: [3, 12, 4], uv: [40, 16] }] },
-    rightSleeve: { parent: 'rightArm', pivot: [-5, 22, 0], cubes: [{ origin: [-7, 12, -2], size: [3, 12, 4], uv: [40, 32], inflate: 0.25 }] },
-    rightItem:   { parent: 'rightArm', pivot: [-6, 15, 1] },
-    leftLeg:    { parent: 'root', pivot: [1.9, 12, 0], cubes: [{ origin: [-0.1, 0, -2], size: [4, 12, 4], uv: [16, 48] }] },
-    leftPants:  { parent: 'leftLeg', pivot: [1.9, 12, 0], cubes: [{ origin: [-0.1, 0, -2], size: [4, 12, 4], uv: [0, 48], inflate: 0.25 }] },
-    rightLeg:   { parent: 'root', pivot: [-1.9, 12, 0], cubes: [{ origin: [-3.9, 0, -2], size: [4, 12, 4], uv: [0, 16] }] },
-    rightPants: { parent: 'rightLeg', pivot: [-1.9, 12, 0], cubes: [{ origin: [-3.9, 0, -2], size: [4, 12, 4], uv: [0, 32], inflate: 0.25 }] },
-    jacket: { parent: 'body', pivot: [0, 24, 0], cubes: [{ origin: [-4, 12, -2], size: [8, 12, 4], uv: [16, 32], inflate: 0.25 }] },
-};
-
-const OVERLAY_BONES = new Set(['hat', 'jacket', 'leftSleeve', 'rightSleeve', 'leftPants', 'rightPants']);
-const BODY_REST_Y = BONES.body.pivot[1] - BONES.waist.pivot[1];
-
-function faceRect(x1, y1, x2, y2) {
-    return [
-        [x1 / TW, 1 - y1 / TH],
-        [x2 / TW, 1 - y1 / TH],
-        [x1 / TW, 1 - y2 / TH],
-        [x2 / TW, 1 - y2 / TH],
-    ];
-}
-
-function applyBoxUV(geo, u, v, w, h, d) {
-    const top    = faceRect(u + d, v, u + d + w, v + d);
-    const bottom = faceRect(u + d + w, v, u + d + w * 2, v + d);
-    const left   = faceRect(u, v + d, u + d, v + d + h);
-    const front  = faceRect(u + d, v + d, u + d + w, v + d + h);
-    const right  = faceRect(u + d + w, v + d, u + d + w + d, v + d + h);
-    const back   = faceRect(u + d + w + d, v + d, u + d + w + d + w, v + d + h);
-
-    const order = [right, left, top, bottom, front, back];
-    const uvAttr = geo.attributes.uv;
-    order.forEach((verts, f) => {
-        verts.forEach((vert, i) => uvAttr.setXY(f * 4 + i, vert[0], vert[1]));
+const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
     });
-    uvAttr.needsUpdate = true;
-}
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-function makeCube(origin, size, uv, inflate, material) {
-    const [ox, oy, oz] = origin;
-    const [w, h, d] = size;
-    const geo = new THREE.BoxGeometry(w + inflate * 2, h + inflate * 2, d + inflate * 2);
-    applyBoxUV(geo, uv[0], uv[1], w, h, d);
-    const mesh = new THREE.Mesh(geo, material);
-    mesh.position.set(ox + w / 2, oy + h / 2, oz + d / 2);
-    return mesh;
-}
-
-function detectFlatOverlays(image) {
-    const flat = new Set();
-    let ctx;
-    try {
-        const canvas = document.createElement('canvas');
-        canvas.width = image.naturalWidth || image.width;
-        canvas.height = image.naturalHeight || image.height;
-        ctx = canvas.getContext('2d', { willReadFrequently: true });
-        ctx.drawImage(image, 0, 0);
-    } catch (err) {
-        return flat;
-    }
-    const scale = (image.naturalWidth || image.width) / TW;
-    OVERLAY_BONES.forEach(name => {
-        const cube = BONES[name].cubes[0];
-        const [u, v] = cube.uv;
-        const [w, h, d] = cube.size;
-        const rx = Math.max(0, Math.round(u * scale));
-        const ry = Math.max(0, Math.round(v * scale));
-        const rw = Math.max(1, Math.round((w * 2 + d * 2) * scale));
-        const rh = Math.max(1, Math.round((d + h) * scale));
-        try {
-            const data = ctx.getImageData(rx, ry, rw, rh).data;
-            let hasTransparency = false;
-            for (let i = 3; i < data.length; i += 4) {
-                if (data[i] < 250) { hasTransparency = true; break; }
-            }
-            if (!hasTransparency) flat.add(name);
-        } catch (err) {
-            /* leave as visible if sampling fails */
-        }
+document.querySelectorAll('.magnetic').forEach(el => {
+    el.addEventListener('mousemove', e => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        el.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
     });
-    return flat;
-}
-
-function buildCharacter(texture, skipBones) {
-    const baseMat = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.85, metalness: 0 });
-    const overlayMat = new THREE.MeshStandardMaterial({
-        map: texture, roughness: 0.85, metalness: 0,
-        transparent: true, alphaTest: 0.5, side: THREE.DoubleSide,
-    });
-
-    const groups = {};
-    Object.keys(BONES).forEach(name => {
-        const data = BONES[name];
-        const group = new THREE.Group();
-        group.name = name;
-        if (data.cubes && !skipBones.has(name)) {
-            const mat = OVERLAY_BONES.has(name) ? overlayMat : baseMat;
-            data.cubes.forEach(c => {
-                const cube = makeCube(c.origin, c.size, c.uv, c.inflate || 0, mat);
-                cube.position.x -= data.pivot[0];
-                cube.position.y -= data.pivot[1];
-                cube.position.z -= data.pivot[2];
-                group.add(cube);
-            });
-        }
-        groups[name] = group;
-    });
-
-    Object.keys(BONES).forEach(name => {
-        const data = BONES[name];
-        if (!data.parent) return;
-        const parentData = BONES[data.parent];
-        groups[name].position.set(
-            data.pivot[0] - parentData.pivot[0],
-            data.pivot[1] - parentData.pivot[1],
-            data.pivot[2] - parentData.pivot[2]
-        );
-        groups[data.parent].add(groups[name]);
-    });
-
-    groups.root.scale.setScalar(1 / 18);
-    return groups;
-}
-
-const stage = document.getElementById('charStage');
-const bubbleEl = document.getElementById('charBubble');
-
-const scene = new THREE.Scene();
-
-const CAM_DIST = 6.5;
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 1.5, CAM_DIST);
-camera.lookAt(0, 0.9, 0);
-
-let renderer;
-try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-} catch (err) {
-    fail('WebGL is unavailable in this browser', err);
-    throw err;
-}
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000, 0);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-stage.appendChild(renderer.domElement);
-
-scene.add(new THREE.HemisphereLight(0xcbb6e0, 0x1a1220, 1.0));
-const key = new THREE.DirectionalLight(0xffffff, 1.5);
-key.position.set(2.5, 4, 3);
-scene.add(key);
-const rim = new THREE.DirectionalLight(0x9d6bc9, 0.6);
-rim.position.set(-3, 2, -3);
-scene.add(rim);
-
-const shadowBlob = new THREE.Mesh(
-    new THREE.CircleGeometry(0.38, 32),
-    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.28 })
-);
-shadowBlob.rotation.x = -Math.PI / 2;
-shadowBlob.position.y = 0.01;
-scene.add(shadowBlob);
-
-let BOUND_X = 3;
-let BOUND_Z = 1.2;
-function updateBounds() {
-    const vFov = (camera.fov * Math.PI) / 180;
-    const visibleHeight = 2 * Math.tan(vFov / 2) * CAM_DIST;
-    const visibleWidth = visibleHeight * camera.aspect;
-    BOUND_X = (visibleWidth / 2) * 0.8;
-    BOUND_Z = Math.min(1.4, BOUND_X * 0.4);
-}
-updateBounds();
-
-function dampAngle(current, target, rate, dt) {
-    let diff = target - current;
-    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-    return current + diff * (1 - Math.exp(-rate * dt));
-}
-
-let character = null;
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
-
-const loader = new THREE.TextureLoader();
-loader.load(
-    SKIN_URL,
-    texture => {
-        try {
-            texture.magFilter = THREE.NearestFilter;
-            texture.minFilter = THREE.NearestFilter;
-            texture.generateMipmaps = false;
-            texture.colorSpace = THREE.SRGBColorSpace;
-
-            const skipBones = detectFlatOverlays(texture.image);
-            character = buildCharacter(texture, skipBones);
-            scene.add(character.root);
-            loadingEl.classList.add('hidden');
-        } catch (err) {
-            fail('building the model failed', err);
-        }
-    },
-    undefined,
-    err => fail('the skin texture could not be fetched (CORS or 404)', err)
-);
-
-let posX = 0, posZ = 0;
-let targetX = 0, targetZ = 0;
-let facingY = 0;
-let state = 'run';
-let stateTimer = 1.5 + Math.random();
-let runBlend = 0;
-let lookTarget = 0;
-let greetT = 0;
-let bubbleUntil = 0;
-
-const clock = new THREE.Clock();
-const headWorldPos = new THREE.Vector3();
-
-function pickDestination() {
-    targetX = (Math.random() * 2 - 1) * BOUND_X;
-    targetZ = (Math.random() * 2 - 1) * BOUND_Z;
-}
-pickDestination();
-
-function computeCameraLookYaw(g) {
-    g.head.getWorldPosition(headWorldPos);
-    const toCam = new THREE.Vector3().subVectors(camera.position, headWorldPos);
-    const worldAngle = Math.atan2(toCam.x, toCam.z);
-    let rel = worldAngle - g.root.rotation.y;
-    rel = Math.atan2(Math.sin(rel), Math.cos(rel));
-    if (Math.abs(rel) > Math.PI * 0.62) return 0;
-    return THREE.MathUtils.clamp(rel, -0.85, 0.85);
-}
-
-function pickIdleGlance() {
-    lookTarget = (Math.random() - 0.5) * 1.6;
-}
-
-function animate() {
-    requestAnimationFrame(animate);
-    const dt = Math.min(clock.getDelta(), 0.05);
-    const t = clock.elapsedTime;
-
-    camera.position.x = Math.sin(t * 0.05) * 0.5;
-    camera.lookAt(0, 0.9, 0);
-
-    if (character) {
-        const g = character;
-        stateTimer -= dt;
-
-        if (state === 'run') {
-            runBlend = THREE.MathUtils.damp(runBlend, 1, 5, dt);
-            const dx = targetX - posX;
-            const dz = targetZ - posZ;
-            const dist = Math.hypot(dx, dz);
-
-            if (dist > 0.08) {
-                const speed = 1.3;
-                posX += (dx / dist) * speed * dt;
-                posZ += (dz / dist) * speed * dt;
-                const desiredYaw = Math.atan2(dx, dz);
-                facingY = dampAngle(facingY, desiredYaw, 8, dt);
-            }
-
-            g.root.position.set(posX, 0, posZ);
-            g.root.rotation.y = facingY;
-
-            const cycle = t * 12;
-            const swing = Math.sin(cycle);
-            g.rightArm.rotation.x = swing * 0.7 * runBlend;
-            g.leftArm.rotation.x = -swing * 0.7 * runBlend;
-            g.rightLeg.rotation.x = -swing * 0.8 * runBlend;
-            g.leftLeg.rotation.x = swing * 0.8 * runBlend;
-            g.body.position.y = BODY_REST_Y + Math.abs(Math.sin(cycle)) * 0.04 * runBlend;
-            g.head.rotation.z = Math.sin(cycle) * 0.03 * runBlend;
-
-            const camYaw = computeCameraLookYaw(g);
-            g.head.rotation.y = dampAngle(g.head.rotation.y, camYaw, 5, dt);
-
-            if (dist <= 0.08 || stateTimer <= 0) {
-                state = 'idle';
-                stateTimer = 1.4 + Math.random() * 2;
-                pickIdleGlance();
-            }
-        } else if (state === 'idle') {
-            runBlend = THREE.MathUtils.damp(runBlend, 0, 6, dt);
-            g.rightArm.rotation.x = THREE.MathUtils.damp(g.rightArm.rotation.x, 0, 6, dt);
-            g.leftArm.rotation.x = THREE.MathUtils.damp(g.leftArm.rotation.x, 0, 6, dt);
-            g.rightLeg.rotation.x = THREE.MathUtils.damp(g.rightLeg.rotation.x, 0, 6, dt);
-            g.leftLeg.rotation.x = THREE.MathUtils.damp(g.leftLeg.rotation.x, 0, 6, dt);
-            g.body.position.y = THREE.MathUtils.damp(g.body.position.y, BODY_REST_Y + Math.sin(t * 1.6) * 0.015, 4, dt);
-            g.head.rotation.z = THREE.MathUtils.damp(g.head.rotation.z, 0, 5, dt);
-
-            if (stateTimer < 1.3 && Math.random() < 0.02) pickIdleGlance();
-            const camYaw = computeCameraLookYaw(g);
-            const blended = camYaw !== 0 ? camYaw : lookTarget;
-            g.head.rotation.y = dampAngle(g.head.rotation.y, blended, 3, dt);
-
-            if (stateTimer <= 0) {
-                state = 'run';
-                stateTimer = 3 + Math.random() * 3;
-                pickDestination();
-            }
-        } else if (state === 'greet') {
-            greetT += dt;
-            g.rightArm.rotation.x = THREE.MathUtils.damp(g.rightArm.rotation.x, -1.9, 10, dt);
-            g.rightArm.rotation.z = Math.sin(greetT * 14) * 0.5;
-            g.head.rotation.y = dampAngle(g.head.rotation.y, 0, 6, dt);
-            g.body.position.y = BODY_REST_Y + Math.abs(Math.sin(greetT * 10)) * 0.03;
-
-            if (greetT > 1.3) {
-                state = 'idle';
-                stateTimer = 1 + Math.random();
-                greetT = 0;
-                g.rightArm.rotation.z = 0;
-            }
-        }
-
-        shadowBlob.position.x = g.root.position.x;
-        shadowBlob.position.z = g.root.position.z;
-
-        if (performance.now() < bubbleUntil) {
-            g.head.getWorldPosition(headWorldPos);
-            headWorldPos.y += 0.14;
-            headWorldPos.project(camera);
-            const px = (headWorldPos.x * 0.5 + 0.5) * window.innerWidth;
-            const py = (-headWorldPos.y * 0.5 + 0.5) * window.innerHeight;
-            bubbleEl.style.left = px + 'px';
-            bubbleEl.style.top = py + 'px';
-            bubbleEl.classList.add('show');
-        } else {
-            bubbleEl.classList.remove('show');
-        }
-    }
-
-    renderer.render(scene, camera);
-}
-animate();
-
-window.addEventListener('click', e => {
-    if (!character) return;
-    pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObject(character.root, true);
-    if (hits.length > 0) {
-        state = 'greet';
-        greetT = 0;
-        bubbleUntil = performance.now() + 1600;
-    }
+    el.addEventListener('mouseleave', () => { el.style.transform = 'translate(0, 0)'; });
 });
 
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    updateBounds();
-});
+renderAnnouncement();
+renderLatestVideo();
 </script>
-
 </body>
 </html>
