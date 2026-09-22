@@ -8,6 +8,24 @@
 <style>
     body { background: transparent; }
 
+    .nh-ambient {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(55% 55% at 18% 22%, rgba(168, 85, 247, 0.28), transparent 60%),
+            radial-gradient(50% 50% at 82% 72%, rgba(236, 72, 153, 0.22), transparent 60%);
+        background-size: 180% 180%;
+        mix-blend-mode: screen;
+        animation: nh-ambient-drift 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes nh-ambient-drift {
+        0% { background-position: 0% 10%, 100% 90%; }
+        100% { background-position: 30% 55%, 70% 35%; }
+    }
+
     .nh-hero {
         position: relative;
         display: flex;
@@ -18,17 +36,35 @@
         padding-top: var(--space-lg, 2rem);
     }
 
-    .nh-avatar {
+    .nh-avatar-frame {
         width: 104px;
         height: 104px;
         border-radius: 50%;
-        object-fit: cover;
+        overflow: hidden;
         box-shadow: var(--shadow-lg, 0 12px 32px rgba(0, 0, 0, 0.35));
         margin-bottom: var(--space-sm, 0.5rem);
     }
 
+    .nh-avatar {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1.22);
+    }
+
     .nh-sparkle-1 { position: absolute; top: -4px; right: 6%; }
     .nh-sparkle-2 { position: absolute; bottom: 4%; left: 8%; }
+
+    .display .text-highlight {
+        background-color: transparent;
+        background-image: linear-gradient(90deg, #a855f7, #ec4899);
+        background-repeat: no-repeat;
+        background-position: 0 92%;
+        background-size: 100% 0.32em;
+        color: inherit;
+        -webkit-text-fill-color: inherit;
+        padding: 0;
+    }
 
     .nh-bio {
         max-width: 560px;
@@ -73,31 +109,31 @@
     }
 
     .nh-cta-wa {
-        background: #25d366;
+        background: linear-gradient(135deg, #2fe07a, #1fae53);
         color: #ffffff;
         justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.18);
     }
 
     .nh-cta-kofi {
-        background: #13c3ff;
-        justify-content: space-between;
-        padding-right: 0.6rem;
+        background: linear-gradient(135deg, #35cdff, #0d9fe0);
+        justify-content: center;
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 0 1px rgba(13, 159, 224, 0.25) inset;
     }
 
-    .nh-kofi-badge {
-        background: #ff5ba8;
-        color: #ffffff;
-        font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
-        font-weight: 700;
-        padding: 0.4rem 1.1rem;
-        border-radius: var(--radius-md, 12px);
-        font-size: 0.95rem;
+    .nh-donate-badge {
+        width: 130px;
+        height: auto;
+        object-fit: contain;
+        flex-shrink: 0;
     }
 </style>
 </head>
 <body>
     <div class="mesh-bg"></div>
     <div class="grain-overlay"></div>
+    <div class="nh-ambient"></div>
 
     <div class="wrapper">
         <div class="theme-toggle-row">
@@ -110,7 +146,9 @@
             <img class="icon icon-lg sparkle nh-sparkle-1" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sparkle_1.png" alt="">
             <img class="icon icon-lg sparkle sparkle-delay nh-sparkle-2" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sparkle_2.png" alt="">
 
-            <img class="nh-avatar" src="/profile.png" alt="Nako Hikari">
+            <div class="nh-avatar-frame">
+                <img class="nh-avatar" src="/profile.png" alt="Nako Hikari">
+            </div>
             <p class="eyebrow">art / gaming / edits</p>
             <h1 class="display">Nako <span class="text-highlight">Hikari</span></h1>
 
@@ -129,7 +167,7 @@
 
             <a class="nh-cta nh-cta-kofi interactive" href="https://ko-fi.com/arialicee" target="_blank" rel="noopener">
                 <img class="nh-cta-icon" src="/ui/kofi.png" alt="">
-                <span class="nh-kofi-badge">Donate</span>
+                <img class="nh-donate-badge" src="/ui/donate.png" alt="Donate">
             </a>
         </section>
 
