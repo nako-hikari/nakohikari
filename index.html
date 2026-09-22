@@ -8,24 +8,6 @@
 <style>
     body { background: transparent; }
 
-    .nh-ambient {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-        background:
-            radial-gradient(55% 55% at 18% 22%, rgba(168, 85, 247, 0.28), transparent 60%),
-            radial-gradient(50% 50% at 82% 72%, rgba(236, 72, 153, 0.22), transparent 60%);
-        background-size: 180% 180%;
-        mix-blend-mode: screen;
-        animation: nh-ambient-drift 20s ease-in-out infinite alternate;
-    }
-
-    @keyframes nh-ambient-drift {
-        0% { background-position: 0% 10%, 100% 90%; }
-        100% { background-position: 30% 55%, 70% 35%; }
-    }
-
     .nh-hero {
         position: relative;
         display: flex;
@@ -56,13 +38,8 @@
     .nh-sparkle-2 { position: absolute; bottom: 4%; left: 8%; }
 
     .display .text-highlight {
-        display: inline-block;
-        background: linear-gradient(120deg, #7c3aed, #db2777);
         color: #ffffff;
         -webkit-text-fill-color: #ffffff;
-        padding: 0.02em 0.32em;
-        border-radius: 0.32em;
-        box-shadow: 0 6px 18px rgba(91, 33, 182, 0.35);
     }
 
     .nh-bio {
@@ -98,18 +75,18 @@
         font-weight: 600;
         font-size: 1.05rem;
         color: #ffffff;
-        background: linear-gradient(135deg, rgba(147, 51, 234, 0.38), rgba(219, 39, 119, 0.32));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
         border: 1px solid rgba(255, 255, 255, 0.16);
-        box-shadow: 0 10px 30px rgba(76, 20, 110, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
         transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
     .nh-cta:hover {
         transform: translateY(-2px);
         border-color: rgba(255, 255, 255, 0.3);
-        box-shadow: 0 14px 36px rgba(76, 20, 110, 0.4);
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .nh-cta-icon-wrap {
@@ -147,7 +124,6 @@
 <body>
     <div class="mesh-bg"></div>
     <div class="grain-overlay"></div>
-    <div class="nh-ambient"></div>
 
     <div class="wrapper">
         <div class="theme-toggle-row">
