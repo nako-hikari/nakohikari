@@ -739,6 +739,12 @@ pre, .output-box {
 }
 
 button.pill { border-radius: var(--radius-full); }
+button.outline {
+    background: transparent;
+    border: var(--border-width) solid var(--accent-light);
+    color: var(--accent-light);
+}
+button.outline:hover { background: var(--accent-dark-50); border-color: var(--accent-light-hover); color: var(--accent-light-hover); }
 
 /* Bottom tab bar (mobile app-shell nav) — the one place in this design
    system a persistent fixed element is intentional; hidden at desktop
@@ -985,8 +991,36 @@ button.pill { border-radius: var(--radius-full); }
 .footer-editorial-socials a { display: inline-flex; color: var(--text-muted); transition: color var(--transition-fast), transform var(--transition-fast); }
 .footer-editorial-socials a:hover { color: var(--accent-light); transform: translateY(-2px); }
 .footer-editorial-socials a.kofi:hover { color: #ff5fa2; }
-.footer-editorial-socials img { width: 22px; height: 22px; }
+.footer-editorial-socials img { width: 22px; height: 22px; filter: var(--icon-filter); }
 .footer-editorial-fine { font-size: var(--fs-xs); color: var(--text-muted); opacity: 0.7; }
+
+/* Link/action card — icon + title + description + button, for a personal
+   hub/portfolio-style stack of links. Elevated over plain .card so a page
+   built mostly of these doesn't read as a generic bordered-box list. */
+.link-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    background: var(--container-bg);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    transition: border-color var(--transition-normal);
+}
+.link-card:hover { border-color: var(--border-color-hover); }
+.link-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: var(--accent-dark-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.link-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
+.link-card-title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text-bright); margin: 0; }
+.link-card-desc { font-size: var(--fs-sm); color: var(--text-muted); margin: 0; }
 
 .footer {
     margin-top: var(--space-2xl, 32px);
@@ -1032,8 +1066,7 @@ button.pill { border-radius: var(--radius-full); }
 .footer-links img {
     width: 16px;
     height: 16px;
-    color-scheme: var(--footer-icon-color-scheme) !important;
-    filter: var(--icon-filter-from-black-source) !important;
+    filter: var(--icon-filter);
     opacity: 0.9;
 }
 
@@ -1042,8 +1075,7 @@ button.pill { border-radius: var(--radius-full); }
 .footer-links a.kofi img {
     width: 20px;
     height: 20px;
-    color-scheme: var(--footer-icon-color-scheme) !important;
-    filter: var(--icon-filter-from-black-source) !important;
+    filter: var(--icon-filter);
     opacity: 0.95;
 }
 
