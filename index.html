@@ -56,22 +56,13 @@
     .nh-sparkle-2 { position: absolute; bottom: 4%; left: 8%; }
 
     .display .text-highlight {
-        position: relative;
-        color: inherit;
-        z-index: 0;
-    }
-
-    .display .text-highlight::after {
-        content: "";
-        position: absolute;
-        left: -3%;
-        right: -3%;
-        bottom: 0.06em;
-        height: 0.16em;
-        border-radius: 999px;
-        background: linear-gradient(90deg, #a855f7, #ec4899);
-        box-shadow: 0 0 16px rgba(236, 72, 153, 0.35);
-        z-index: -1;
+        display: inline-block;
+        background: linear-gradient(120deg, #7c3aed, #db2777);
+        color: #ffffff;
+        -webkit-text-fill-color: #ffffff;
+        padding: 0.02em 0.32em;
+        border-radius: 0.32em;
+        box-shadow: 0 6px 18px rgba(91, 33, 182, 0.35);
     }
 
     .nh-bio {
@@ -98,44 +89,55 @@
     .nh-cta {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: var(--space-sm, 0.75rem);
         width: 100%;
-        padding: 0.9rem 1.25rem;
+        padding: 0.85rem 1.4rem;
         border-radius: var(--radius-full, 999px);
         text-decoration: none;
         font-weight: 600;
         font-size: 1.05rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        color: #ffffff;
+        background: linear-gradient(135deg, rgba(147, 51, 234, 0.38), rgba(219, 39, 119, 0.32));
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 0 10px 30px rgba(76, 20, 110, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
     .nh-cta:hover {
         transform: translateY(-2px);
-        box-shadow: var(--shadow-md, 0 8px 20px rgba(0, 0, 0, 0.25));
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 14px 36px rgba(76, 20, 110, 0.4);
     }
 
-    .nh-cta-icon {
-        width: 26px;
-        height: 26px;
-        object-fit: contain;
+    .nh-cta-icon-wrap {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         flex-shrink: 0;
     }
 
-    .nh-cta-wa {
-        background: linear-gradient(135deg, #2fe07a, #1fae53);
-        color: #ffffff;
-        justify-content: center;
-        border: 1px solid rgba(255, 255, 255, 0.18);
+    .nh-cta-wa .nh-cta-icon-wrap {
+        background: #25d366;
     }
 
-    .nh-cta-kofi {
-        background: linear-gradient(135deg, #35cdff, #0d9fe0);
-        justify-content: center;
-        border: 1.5px solid rgba(255, 255, 255, 0.4);
-        box-shadow: 0 0 0 1px rgba(13, 159, 224, 0.25) inset;
+    .nh-cta-kofi .nh-cta-icon-wrap {
+        background: #13c3ff;
+    }
+
+    .nh-cta-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
     }
 
     .nh-donate-badge {
-        width: 130px;
+        width: 128px;
         height: auto;
         object-fit: contain;
         flex-shrink: 0;
@@ -173,12 +175,16 @@
 
         <section class="nh-links reveal">
             <a class="nh-cta nh-cta-wa interactive" href="https://whatsapp.com/channel/0029VbEC21OKrWR3TYTSYi46" target="_blank" rel="noopener">
-                <img class="nh-cta-icon" src="/ui/wa-channel.png" alt="">
+                <span class="nh-cta-icon-wrap">
+                    <img class="nh-cta-icon" src="/ui/wa-channel.png" alt="">
+                </span>
                 <span>Join my WhatsApp channel</span>
             </a>
 
             <a class="nh-cta nh-cta-kofi interactive" href="https://ko-fi.com/arialicee" target="_blank" rel="noopener">
-                <img class="nh-cta-icon" src="/ui/kofi.png" alt="">
+                <span class="nh-cta-icon-wrap">
+                    <img class="nh-cta-icon" src="/ui/kofi.png" alt="">
+                </span>
                 <img class="nh-donate-badge" src="/ui/donate.png" alt="Donate">
             </a>
         </section>
