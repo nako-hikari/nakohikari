@@ -56,22 +56,34 @@
     .nh-sparkle-2 { position: absolute; bottom: 4%; left: 8%; }
 
     .display .text-highlight {
-        background-color: transparent;
-        background-image: linear-gradient(90deg, #a855f7, #ec4899);
-        background-repeat: no-repeat;
-        background-position: 0 92%;
-        background-size: 100% 0.32em;
+        position: relative;
         color: inherit;
-        -webkit-text-fill-color: inherit;
-        padding: 0;
+        z-index: 0;
+    }
+
+    .display .text-highlight::after {
+        content: "";
+        position: absolute;
+        left: -3%;
+        right: -3%;
+        bottom: 0.06em;
+        height: 0.16em;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #a855f7, #ec4899);
+        box-shadow: 0 0 16px rgba(236, 72, 153, 0.35);
+        z-index: -1;
     }
 
     .nh-bio {
-        max-width: 560px;
-        color: var(--text-muted, rgba(235, 230, 245, 0.72));
+        max-width: 540px;
+        color: rgba(255, 255, 255, 0.82);
         line-height: 1.7;
         font-size: var(--fs-md, 1.05rem);
         margin-top: var(--space-sm, 0.5rem);
+    }
+
+    [data-theme="light"] .nh-bio {
+        color: rgba(35, 20, 45, 0.75);
     }
 
     .nh-links {
