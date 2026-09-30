@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nako Hikari | Editing anime girls and other stuff to real world</title>
+<meta name="description" content="Nako Hikari: editing anime girls and other stuff to real world. Donate on Ko-fi or join the WhatsApp channel.">
+<meta name="theme-color" content="#120b1f">
+<link rel="canonical" href="https://nakohikari.vercel.app/nako">
+<link rel="icon" href="/ui/nako-pfp.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nako Hikari">
+<meta property="og:description" content="Editing anime girls and other stuff to real world">
+<meta property="og:url" content="https://nakohikari.vercel.app/nako">
+<meta property="og:image" content="https://nakohikari.vercel.app/ui/nako-pfp.png">
+<meta name="twitter:card" content="summary">
+<script>try{if(localStorage.getItem('nako-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<link rel="stylesheet" href="/css/nako.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/nako-hikari/assets@main/css/nako.css';">
+<style>
+:root {
+    --pg-text: #f6f1ff;
+    --pg-muted: rgba(246, 241, 255, 0.68);
+    --pg-card: rgba(24, 15, 38, 0.5);
+    --pg-card-hover: rgba(32, 21, 50, 0.64);
+    --pg-line: rgba(255, 255, 255, 0.13);
+    --pg-line-hover: rgba(255, 255, 255, 0.3);
+    --pg-shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.65);
+    --pg-gap: #150d24;
+    --pg-kofi-a: #64a2f8;
+    --pg-kofi-b: #3a74d9;
+    --pg-wa-a: #2fd36f;
+    --pg-wa-b: #139246;
+    --pg-orb-opacity: 0.5;
+    --pg-a: #f472b6;
+    --pg-b: #fb7185;
+    --pg-c: #c4b5fd;
+    --pg-speed: 30s;
+    --o1x: 20vw; --o1y: -24vmax;
+    --o2x: 60vw; --o2y: 50vh;
+    --o3x: -15vmax; --o3y: 45vh;
+}
+:root[data-theme="light"] {
+    --pg-text: #24132f;
+    --pg-muted: rgba(36, 19, 47, 0.7);
+    --pg-card: rgba(255, 255, 255, 0.58);
+    --pg-card-hover: rgba(255, 255, 255, 0.78);
+    --pg-line: rgba(64, 26, 92, 0.16);
+    --pg-line-hover: rgba(64, 26, 92, 0.34);
+    --pg-shadow: 0 26px 60px -30px rgba(64, 26, 92, 0.4);
+    --pg-gap: #f6f0fc;
+    --pg-orb-opacity: 0.42;
+}
+
+body { background: transparent; color: var(--pg-text); }
+.wrapper, .wrapper *, .wrapper *::before, .wrapper *::after { box-sizing: border-box; }
+
+.aurora { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.orb { position: absolute; border-radius: 50%; opacity: var(--pg-orb-opacity); will-change: transform; }
+.orb.o1 { width: 56vmax; height: 56vmax; left: var(--o1x); top: var(--o1y); background: radial-gradient(circle at 50% 50%, var(--pg-a) 0%, transparent 68%); animation: drift-a var(--pg-speed) ease-in-out infinite alternate; }
+.orb.o2 { width: 48vmax; height: 48vmax; left: var(--o2x); top: var(--o2y); background: radial-gradient(circle at 50% 50%, var(--pg-b) 0%, transparent 66%); animation: drift-b calc(var(--pg-speed) * 1.25) ease-in-out infinite alternate; }
+.orb.o3 { width: 44vmax; height: 44vmax; left: var(--o3x); top: var(--o3y); background: radial-gradient(circle at 50% 50%, var(--pg-c) 0%, transparent 66%); animation: drift-c calc(var(--pg-speed) * 1.5) ease-in-out infinite alternate; }
+@keyframes drift-a { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(9vw, 12vh, 0) scale(1.18); } }
+@keyframes drift-b { from { transform: translate3d(0, 0, 0) scale(1.1); } to { transform: translate3d(-12vw, -8vh, 0) scale(0.92); } }
+@keyframes drift-c { from { transform: translate3d(0, 0, 0) scale(0.95); } to { transform: translate3d(8vw, -14vh, 0) scale(1.15); } }
+
+.wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 560px;
+    min-height: 100vh;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: max(18px, env(safe-area-inset-top)) 20px max(26px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+a.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 18px 0 13px;
+    border-radius: 999px;
+    background: var(--pg-card);
+    border: 1px solid var(--pg-line);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    color: var(--pg-text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+a.back .icon { width: 18px; height: 18px; }
+a.back:hover { transform: translateX(-3px); border-color: var(--pg-line-hover); background: var(--pg-card-hover); }
+a.back:focus-visible { outline: 2px solid var(--pg-a); outline-offset: 3px; }
+
+.stack { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 34px 0 30px; }
+
+.profile { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+.pfp {
+    position: relative;
+    isolation: isolate;
+    flex: none;
+    width: clamp(96px, 27vw, 120px);
+    aspect-ratio: 1;
+    padding: 3px;
+    border-radius: 50%;
+    background: conic-gradient(from 200deg, var(--pg-a), var(--pg-b), var(--pg-c), var(--pg-a));
+}
+.pfp::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    z-index: -1;
+    border-radius: 50%;
+    background: inherit;
+    filter: blur(20px);
+    opacity: 0.55;
+}
+.pfp .face {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: none;
+    background: var(--pg-gap);
+    box-shadow: 0 0 0 4px var(--pg-gap);
+}
+.pfp .sparkle { position: absolute; top: -8px; right: -10px; width: 26px; height: 26px; }
+
+.ident { min-width: 0; }
+.ident h1 {
+    margin: 0;
+    font-size: clamp(1.9rem, 8.6vw, 2.75rem);
+    line-height: 1.02;
+    letter-spacing: var(--ls-tight, -0.03em);
+    color: var(--pg-text);
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    overflow-wrap: anywhere;
+}
+.ident .tagline { margin: 0.6rem 0 0; max-width: 24ch; font-size: 1.02rem; line-height: 1.45; color: var(--pg-muted); text-wrap: balance; }
+
+a.link-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px 14px 14px;
+    border-radius: 999px;
+    background: var(--pg-card);
+    border: 1px solid var(--pg-line);
+    box-shadow: var(--pg-shadow);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    backdrop-filter: blur(22px) saturate(140%);
+    color: var(--pg-text);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease, background 0.25s ease;
+}
+a.link-card:hover { transform: translateY(-3px); border-color: var(--pg-line-hover); background: var(--pg-card-hover); }
+a.link-card:active { transform: translateY(0) scale(0.985); }
+a.link-card:focus-visible { outline: 2px solid var(--pg-a); outline-offset: 4px; }
+
+a.link-card .link-card-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: var(--accent-dark);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 10px 22px -10px rgba(0, 0, 0, 0.6);
+}
+a.link-card .link-card-icon img { width: 60%; height: 60%; object-fit: contain; }
+a.link-card .link-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+a.link-card .link-card-desc { margin: 0; padding-left: 6px; font-size: 0.86rem; line-height: 1.3; color: var(--pg-muted); text-wrap: balance; }
+
+.cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 20px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 12px 24px -12px var(--cta-glow);
+    transition: filter 0.25s ease;
+}
+.cta::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.25s ease;
+}
+a.link-card:hover .cta { filter: brightness(1.08); }
+a.link-card:hover .cta::after { transform: translateX(3px) rotate(45deg); }
+.cta-kofi { background: linear-gradient(135deg, var(--pg-kofi-a), var(--pg-kofi-b)); --cta-glow: rgba(58, 116, 217, 0.95); }
+.cta-wa { background: linear-gradient(135deg, var(--pg-wa-a), var(--pg-wa-b)); --cta-glow: rgba(19, 146, 70, 0.95); }
+
+.footer-editorial { position: relative; z-index: 1; margin-top: 6px; text-align: center; }
+.footer-editorial-socials { justify-content: center; }
+
+.reveal { transition-delay: var(--d, 0ms); }
+
+@media (max-width: 380px) {
+    .profile { gap: 14px; }
+    a.link-card { gap: 10px; padding: 12px 12px 12px 12px; }
+    a.link-card .link-card-icon { width: 56px; height: 56px; }
+    .cta { padding: 0 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .orb { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    a.link-card, a.back { transition: none; }
+}
+</style>
+<noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+</head>
+<body>
+<div class="mesh-bg"></div>
+<div class="grain-overlay"></div>
+<div class="aurora" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
+
+<div class="wrapper">
+    <header class="topbar">
+        <a class="back interactive" href="https://nakohikari.vercel.app" aria-label="Back to Nako Hikari home">
+            <img class="icon" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/back_arrow.png" alt="">
+            <span>Back</span>
+        </a>
+        <button class="theme-toggle interactive" onclick="toggleTheme()" aria-label="Toggle theme">
+            <img id="theme-icon" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/moon.png" alt="">
+        </button>
+    </header>
+
+    <main class="stack">
+        <section class="profile reveal">
+            <div class="pfp">
+                <img class="face" src="/ui/nako-pfp.png" alt="Nako Hikari profile picture" width="120" height="120">
+                <img class="icon icon-lg sparkle" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sparkle_1.png" alt="">
+            </div>
+            <div class="ident">
+                <h1>Nako Hikari</h1>
+                <p class="tagline">Editing anime girls and other stuff to real world</p>
+            </div>
+        </section>
+
+        <div class="reveal" style="--d: 120ms">
+            <a class="link-card" href="https://ko-fi.com/arialicee" target="_blank" rel="noopener noreferrer" aria-label="Donate to Nako Hikari on Ko-fi">
+                <span class="link-card-icon"><img src="/ui/kofi.png" alt=""></span>
+                <span class="link-card-body">
+                    <span class="link-card-desc">Fund more anime edits</span>
+                    <span class="cta cta-kofi">Donate</span>
+                </span>
+            </a>
+        </div>
+
+        <div class="reveal" style="--d: 220ms">
+            <a class="link-card" href="https://whatsapp.com/channel/0029VbEC21OKrWR3TYTSYi46" target="_blank" rel="noopener noreferrer" aria-label="Join the Nako Hikari WhatsApp channel">
+                <span class="link-card-icon"><img src="/ui/wa.png" alt=""></span>
+                <span class="link-card-body">
+                    <span class="link-card-desc">Updates on new edits</span>
+                    <span class="cta cta-wa">Join channel</span>
+                </span>
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer-editorial reveal" style="--d: 320ms">
+        <p class="footer-editorial-cta">Become more halu.</p>
+        <div class="footer-editorial-socials">
+            <a href="https://youtube.com/@nako.hikarin?si=S-NJ5VsPiVEpk1JY" target="_blank" rel="noopener noreferrer" class="social" aria-label="Nako Hikari on YouTube">
+                <img src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/youtube.png" alt="YouTube">
+            </a>
+            <a href="https://www.tiktok.com/@nako_h?_r=1&_t=ZS-9A8gIFx2a17" target="_blank" rel="noopener noreferrer" class="social" aria-label="Nako Hikari on TikTok">
+                <img src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/tiktok.png" alt="TikTok">
+            </a>
+        </div>
+        <p class="footer-editorial-fine">Nako Hikari</p>
+    </footer>
+</div>
+
+<div class="modal-overlay" id="nakoModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 class="modal-title" id="nakoModalTitle"></h2>
+            <button class="modal-close interactive" onclick="closeNakoModal()" aria-label="Close">
+                <img class="icon" src="https://raw.githubusercontent.com/nako-hikari/assets/main/ui/close.png" alt="">
+            </button>
+        </div>
+        <div class="modal-body" id="nakoModalBody"></div>
+        <div class="modal-footer" id="nakoModalFooter"></div>
+    </div>
+</div>
+
+<script>
+const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+function toggleTheme() {
+    const root = document.documentElement;
+    const btn = document.querySelector('.theme-toggle');
+    const icon = document.getElementById('theme-icon');
+    const goingLight = root.getAttribute('data-theme') !== 'light';
+
+    btn.classList.add('spinning');
+    setTimeout(() => btn.classList.remove('spinning'), 400);
+
+    if (goingLight) {
+        root.setAttribute('data-theme', 'light');
+        icon.src = 'https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sun.png';
+        localStorage.setItem('nako-theme', 'light');
+    } else {
+        root.removeAttribute('data-theme');
+        icon.src = 'https://raw.githubusercontent.com/nako-hikari/assets/main/ui/moon.png';
+        localStorage.setItem('nako-theme', 'dark');
+    }
+}
+
+(function() {
+    if (localStorage.getItem('nako-theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('theme-icon').src = 'https://raw.githubusercontent.com/nako-hikari/assets/main/ui/sun.png';
+    }
+})();
+
+function showModal(title, message, options) {
+    options = options || {};
+    document.getElementById('nakoModalTitle').textContent = title;
+    document.getElementById('nakoModalBody').textContent = message;
+
+    const footer = document.getElementById('nakoModalFooter');
+    footer.innerHTML = '';
+
+    if (options.onConfirm) {
+        const cancel = document.createElement('button');
+        cancel.className = 'secondary interactive';
+        cancel.textContent = options.cancelText || 'Cancel';
+        cancel.onclick = closeNakoModal;
+        footer.appendChild(cancel);
+
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = options.danger ? 'danger interactive' : 'primary interactive';
+        confirmBtn.textContent = options.confirmText || (options.danger ? 'Delete' : 'Confirm');
+        confirmBtn.onclick = () => { closeNakoModal(); options.onConfirm(); };
+        footer.appendChild(confirmBtn);
+    } else {
+        const ok = document.createElement('button');
+        ok.className = 'secondary interactive';
+        ok.textContent = 'OK';
+        ok.onclick = closeNakoModal;
+        footer.appendChild(ok);
+    }
+
+    document.getElementById('nakoModal').classList.add('open');
+}
+
+function closeNakoModal() {
+    document.getElementById('nakoModal').classList.remove('open');
+}
+
+document.getElementById('nakoModal').addEventListener('click', e => {
+    if (e.target.id === 'nakoModal') closeNakoModal();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeNakoModal();
+});
+
+window.alert = msg => showModal('Notice', String(msg));
+</script>
+</body>
+</html>
