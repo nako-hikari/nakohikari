@@ -661,6 +661,32 @@ pre, .output-box {
 
 .overflow-auto { overflow-x: auto; }
 
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* In-flow loading indicator — for a list that's still populating (more
+   results streaming in, an extraction in progress). This sits in normal
+   document flow as the last item in the list/content it belongs to, so it
+   can never end up positioned above the viewport as the list grows —
+   the bug that happens when a spinner is absolutely centered inside a
+   container whose height keeps changing. */
+.spinner-inline { display: flex; align-items: center; justify-content: center; padding: var(--space-lg); width: 100%; }
+.spinner-inline img { animation: spin 0.8s linear infinite; }
+
+/* Full-page blocking loading state — the one case where a spinner is
+   allowed to float over content. Fixed to the viewport itself, exactly
+   like .modal-overlay, never to a parent element that changes size. */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-overlay);
+}
+.loading-overlay.open { display: flex; }
+.loading-overlay img { animation: spin 0.8s linear infinite; }
+
 .modal-overlay {
     position: fixed;
     inset: 0;
